@@ -42,3 +42,4 @@ Acesse em: `http://localhost:3000`
 
 - `npx prisma studio`: Interface visual para gerenciar o banco de dados.
 - `npx prisma db seed`: Repopular o banco de dados com dados iniciais.
+# BoraProResort
