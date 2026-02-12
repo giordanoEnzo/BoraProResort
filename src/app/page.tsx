@@ -1,8 +1,9 @@
-
 import { prisma } from '@/lib/prisma'
 import Hero from '@/components/Hero'
 import ResortCard from '@/components/ResortCard'
 import PromotionCard from '@/components/PromotionCard'
+
+export const dynamic = 'force-dynamic'
 
 export default async function Home() {
   const resorts = await prisma.resort.findMany()
