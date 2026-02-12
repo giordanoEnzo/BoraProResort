@@ -51,10 +51,10 @@ export default async function ResortPage({ params }: { params: ResortParams }) {
             />
 
             <div className="container" style={{ marginTop: '4rem', marginBottom: '4rem' }}>
-                <div className="grid" style={{ gridTemplateColumns: '1fr 1fr', gap: '3rem' }}>
+                <div className="grid grid-cols-2">
                     <div>
-                        <h2 style={{ fontSize: '2rem' }}>Sobre o Resort</h2>
-                        <p style={{ fontSize: '1.1rem', lineHeight: '1.8' }}>{resortData.description}</p>
+                        <h2>Sobre o Resort</h2>
+                        <p style={{ lineHeight: '1.6' }}>{resortData.description}</p>
                         <div style={{ marginTop: '2rem', padding: '1.5rem', background: '#fff3cd', borderRadius: '8px' }}>
                             <h3 style={{ fontSize: '1.2rem', marginBottom: '1rem' }}>Informações Importantes</h3>
                             <ul style={{ paddingLeft: '20px' }}>

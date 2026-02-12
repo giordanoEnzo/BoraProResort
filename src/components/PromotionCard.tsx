@@ -13,11 +13,11 @@ interface PromotionProps {
 
 export default function PromotionCard({ id, title, price, hotel, duration, imageUrl }: PromotionProps) {
     return (
-        <div className="card" style={{ padding: '0', overflow: 'hidden', position: 'relative' }}>
+        <div className="card">
             <div style={{ position: 'absolute', top: '10px', right: '10px', background: '#e33537', color: 'white', padding: '4px 10px', borderRadius: '4px', zIndex: 1, fontWeight: 'bold' }}>
                 Promoção
             </div>
-            <div style={{ height: '220px', position: 'relative' }}>
+            <div className="promotion-card-image">
                 <Image
                     src={imageUrl || '/placeholder.jpg'}
                     alt={title}
@@ -25,9 +25,9 @@ export default function PromotionCard({ id, title, price, hotel, duration, image
                     style={{ objectFit: 'cover' }}
                 />
             </div>
-            <div style={{ padding: '1.5rem' }}>
+            <div style={{ padding: '1.5rem', flex: 1, display: 'flex', flexDirection: 'column' }}>
                 <h3 style={{ fontSize: '1.4rem', marginBottom: '0.5rem' }}>{title}</h3>
-                <p style={{ color: '#666', fontSize: '0.9rem', marginBottom: '0.5rem' }}>{hotel} • {duration}</p>
+                <p style={{ color: '#666', fontSize: '0.9rem', marginBottom: 'auto' }}>{hotel} • {duration}</p>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1rem' }}>
                     <div>
                         <span style={{ fontSize: '0.8rem', color: '#666' }}>A partir de</span>

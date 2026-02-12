@@ -16,17 +16,17 @@ export default async function Home() {
       <section className="section" id="sobre">
         <div className="container text-center">
           <p className="subtitle" style={{ color: 'var(--color-primary)', textTransform: 'uppercase', letterSpacing: '2px', fontWeight: 'bold' }}>Sobre Nós</p>
-          <h2 style={{ fontSize: '2.5rem', marginBottom: '2rem' }}>O seu refúgio de verão</h2>
-          <div className="grid grid-cols-2" style={{ maxWidth: '900px', margin: '0 auto', gap: '3rem', textAlign: 'left' }}>
+          <h2>O seu refúgio de verão</h2>
+          <div className="grid grid-cols-2 text-left" style={{ maxWidth: '900px', margin: '2rem auto 0' }}>
             <div>
-              <p style={{ fontSize: '1.2rem', lineHeight: '1.8' }}>
+              <p>
                 A <strong>Bora Pro Resort</strong> é especializada em conectar você aos melhores destinos de águas quentes e lazer do interior de São Paulo. Nossa missão é proporcionar momentos de alegria, conforto sofisticado e aventura.
               </p>
             </div>
             <div>
               <ul style={{ listStyle: 'none', padding: 0 }}>
                 {['Tropicalidade vibrante', 'Estilo de vida premium', 'Aventura para a família', 'Conforto e sofisticação'].map(item => (
-                  <li key={item} style={{ marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <li key={item} className="mb-1 flex-center-gap">
                     <span style={{ color: 'var(--color-secondary)', fontSize: '1.5rem' }}>☀</span> {item}
                   </li>
                 ))}
@@ -39,7 +39,7 @@ export default async function Home() {
       <section className="section" style={{ background: 'white' }} id="resorts">
         <div className="container">
           <div className="text-center mb-4">
-            <h2 style={{ fontSize: '2.5rem' }}>Resorts Parceiros</h2>
+            <h2>Resorts Parceiros</h2>
             <p className="subtitle">Escolha seu destino ideal</p>
           </div>
 
@@ -62,8 +62,8 @@ export default async function Home() {
       <section className="section" id="promocoes" style={{ background: '#e33537', padding: '4rem 0' }}>
         <div className="container">
           <div className="text-center mb-4" style={{ color: 'white' }}>
-            <h2 style={{ fontSize: '2.5rem', color: 'white', marginBottom: '0.5rem' }}>Ofertas Imperdíveis</h2>
-            <p style={{ fontSize: '1.2rem', opacity: 0.9 }}>Pacotes exclusivos selecionados para você</p>
+            <h2 style={{ color: 'white', marginBottom: '0.5rem' }}>Ofertas Imperdíveis</h2>
+            <p style={{ opacity: 0.9 }}>Pacotes exclusivos selecionados para você</p>
           </div>
 
           <div className="grid grid-cols-3">

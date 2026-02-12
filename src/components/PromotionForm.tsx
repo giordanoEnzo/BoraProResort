@@ -143,7 +143,7 @@ export default function PromotionForm({ initialData }: PromotionFormProps) {
 
             <div style={{ marginBottom: '1rem' }}>
                 <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>Refeições Inclusas</label>
-                <div style={{ display: 'flex', gap: '2rem' }}>
+                <div style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap' }}>
                     <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                         <input type="checkbox" checked={formData.breakfast} onChange={e => setFormData({ ...formData, breakfast: e.target.checked })} />
                         Café da Manhã
@@ -208,7 +208,7 @@ export default function PromotionForm({ initialData }: PromotionFormProps) {
                 )}
             </div>
 
-            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem', flexWrap: 'wrap' }}>
                 <button type="button" onClick={() => router.back()} className="btn btn-secondary">Cancelar</button>
                 <button type="submit" disabled={loading} className="btn btn-primary">
                     {loading ? 'Salvando...' : 'Salvar'}

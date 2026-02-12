@@ -12,8 +12,8 @@ interface ResortCardProps {
 
 export default function ResortCard({ name, city, imageUrl, slug }: ResortCardProps) {
     return (
-        <div className="card resort-card" style={{ transition: 'transform 0.3s' }}>
-            <div style={{ position: 'relative', height: '250px' }}>
+        <div className="card resort-card">
+            <div className="resort-card-image">
                 <Image
                     src={imageUrl}
                     alt={name}
@@ -22,7 +22,7 @@ export default function ResortCard({ name, city, imageUrl, slug }: ResortCardPro
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 />
             </div>
-            <div style={{ padding: '1.5rem' }}>
+            <div style={{ padding: '1.5rem', flex: 1, display: 'flex', flexDirection: 'column' }}>
                 <span style={{
                     fontSize: '0.9rem',
                     color: 'var(--color-primary)',
@@ -32,8 +32,8 @@ export default function ResortCard({ name, city, imageUrl, slug }: ResortCardPro
                 }}>
                     {city}
                 </span>
-                <h3 style={{ margin: '0.5rem 0 1rem', fontSize: '1.5rem' }}>{name}</h3>
-                <Link href={`/resorts/${slug}`} className="btn btn-secondary" style={{ width: '100%', textAlign: 'center' }}>
+                <h3 style={{ margin: '0.5rem 0 1rem', fontSize: '1.5rem', flex: 1 }}>{name}</h3>
+                <Link href={`/resorts/${slug}`} className="btn btn-secondary" style={{ width: '100%', textAlign: 'center', display: 'block' }}>
                     Ver Disponibilidade
                 </Link>
             </div>

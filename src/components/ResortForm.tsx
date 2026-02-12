@@ -167,7 +167,7 @@ export default function ResortForm({ initialData }: ResortFormProps) {
                 </div>
             </div>
 
-            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem', flexWrap: 'wrap' }}>
                 <button type="button" onClick={() => router.back()} className="btn btn-secondary">Cancelar</button>
                 <button type="submit" disabled={loading} className="btn btn-primary">
                     {loading ? 'Salvando...' : 'Salvar Resort'}

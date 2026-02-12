@@ -65,8 +65,8 @@ export default function ResortCarousel({ images, title, subtitle }: ResortCarous
                 textAlign: 'center',
                 zIndex: 2
             }}>
-                <h1 style={{ fontSize: '3rem', margin: 0 }}>{title}</h1>
-                <p style={{ fontSize: '1.2rem', opacity: 0.9 }}>{subtitle}</p>
+                <h1 className="hero-title">{title}</h1>
+                <p className="hero-subtitle">{subtitle}</p>
             </div>
 
             {images.length > 1 && (
