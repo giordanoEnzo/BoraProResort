@@ -106,12 +106,12 @@ export default function AdminDashboard() {
     return (
         <div className="section" style={{ background: '#f5f5f5', minHeight: '100vh' }}>
             <div className="container">
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
                     <h2 style={{ fontSize: '2rem', fontWeight: 'bold' }}>Painel Administrativo</h2>
-                    <div style={{ display: 'flex', gap: '1rem' }}>
-                        <Link href="/admin/promotions" className="btn btn-secondary" style={{ background: '#fbc02d' }}>Gerenciar Promoções</Link>
-                        <Link href="/admin/resorts" className="btn btn-primary">Gerenciar Resorts</Link>
-                        <Link href="/" className="btn btn-secondary">Voltar ao Site</Link>
+                    <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+                        <Link href="/admin/promotions" className="btn btn-secondary" style={{ background: '#fbc02d', flexGrow: 1, textAlign: 'center' }}>Gerenciar Promoções</Link>
+                        <Link href="/admin/resorts" className="btn btn-primary" style={{ flexGrow: 1, textAlign: 'center' }}>Gerenciar Resorts</Link>
+                        <Link href="/" className="btn btn-secondary" style={{ flexGrow: 1, textAlign: 'center' }}>Voltar ao Site</Link>
                     </div>
                 </div>
 
@@ -138,7 +138,7 @@ export default function AdminDashboard() {
 
                 {/* Charts Section */}
                 {stats && (
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem', marginBottom: '2rem' }}>
+                    <div className="grid grid-cols-2" style={{ marginBottom: '2rem' }}>
                         {/* Sales Chart */}
                         <div className="card" style={{ padding: '1.5rem' }}>
                             <h4 style={{ marginBottom: '1.5rem' }}>Vendas por Mês</h4>

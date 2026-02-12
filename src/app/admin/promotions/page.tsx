@@ -56,11 +56,11 @@ export default function PromotionList() {
     return (
         <div className="section" style={{ background: '#f5f5f5', minHeight: '100vh' }}>
             <div className="container">
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
                     <h2 style={{ fontSize: '2rem', fontWeight: 'bold' }}>Gerenciar Promoções</h2>
-                    <div style={{ display: 'flex', gap: '1rem' }}>
-                        <Link href="/admin/dashboard" className="btn btn-secondary">Voltar ao Painel</Link>
-                        <Link href="/admin/promotions/new" className="btn btn-primary">Nova Promoção</Link>
+                    <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+                        <Link href="/admin/dashboard" className="btn btn-secondary" style={{ flexGrow: 1, textAlign: 'center' }}>Voltar ao Painel</Link>
+                        <Link href="/admin/promotions/new" className="btn btn-primary" style={{ flexGrow: 1, textAlign: 'center' }}>Nova Promoção</Link>
                     </div>
                 </div>
 
