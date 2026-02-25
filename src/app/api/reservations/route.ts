@@ -45,10 +45,29 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url)
     const resortId = searchParams.get('resortId')
     const status = searchParams.get('status')
+    const createdAtStart = searchParams.get('createdAtStart')
+    const createdAtEnd = searchParams.get('createdAtEnd')
 
     const where: any = {}
     if (resortId) where.resortId = resortId
     if (status) where.status = status
+
+    if (createdAtStart || createdAtEnd) {
+        where.createdAt = {}
+        if (createdAtStart) {
+            const start = new Date(createdAtStart)
+            if (!isNaN(start.getTime())) {
+                where.createdAt.gte = start
+            }
+        }
+        if (createdAtEnd) {
+            const end = new Date(createdAtEnd)
+            if (!isNaN(end.getTime())) {
+                end.setHours(23, 59, 59, 999)
+                where.createdAt.lte = end
+            }
+        }
+    }
 
     const reservations = await prisma.reservation.findMany({
         where,

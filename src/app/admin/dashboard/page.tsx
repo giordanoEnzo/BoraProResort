@@ -2,7 +2,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { format } from 'date-fns'
+import { format, isToday } from 'date-fns'
 import Link from 'next/link'
 
 interface Reservation {
@@ -50,6 +50,8 @@ export default function AdminDashboard() {
     const [stats, setStats] = useState<{ kpi: KPI, salesPerMonth: SalesData[], mostRequestedDays: DayStats[] } | null>(null)
     const [filterResort, setFilterResort] = useState('')
     const [filterStatus, setFilterStatus] = useState('')
+    const [filterDateStart, setFilterDateStart] = useState('')
+    const [filterDateEnd, setFilterDateEnd] = useState('')
     const [loading, setLoading] = useState(true)
 
     const fetchReservations = async () => {
@@ -58,6 +60,8 @@ export default function AdminDashboard() {
         const params = new URLSearchParams()
         if (filterResort) params.append('resortId', filterResort)
         if (filterStatus) params.append('status', filterStatus)
+        if (filterDateStart) params.append('createdAtStart', filterDateStart)
+        if (filterDateEnd) params.append('createdAtEnd', filterDateEnd)
         if (params.toString()) url += `?${params.toString()}`
 
         try {
@@ -83,7 +87,7 @@ export default function AdminDashboard() {
     useEffect(() => {
         fetchReservations()
         fetchStats()
-    }, [filterResort, filterStatus])
+    }, [filterResort, filterStatus, filterDateStart, filterDateEnd])
 
     const handleStatusChange = async (id: string, newStatus: string) => {
         if (!confirm(`Alterar status para ${newStatus}?`)) return
@@ -234,7 +238,21 @@ export default function AdminDashboard() {
                 <div className="card" style={{ padding: '1.5rem', marginBottom: '2rem' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: '10px' }}>
                         <h4>Todas as Reservas</h4>
-                        <div style={{ display: 'flex', gap: '1rem', width: '100%' }}>
+                        <div style={{ display: 'flex', gap: '1rem', width: '100%', flexWrap: 'wrap' }}>
+                            <input
+                                type="date"
+                                title="Data de Início da Solicitação"
+                                value={filterDateStart}
+                                onChange={e => setFilterDateStart(e.target.value)}
+                                style={{ padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }}
+                            />
+                            <input
+                                type="date"
+                                title="Data de Término da Solicitação"
+                                value={filterDateEnd}
+                                onChange={e => setFilterDateEnd(e.target.value)}
+                                style={{ padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }}
+                            />
                             <select
                                 value={filterStatus}
                                 onChange={e => setFilterStatus(e.target.value)}
@@ -268,7 +286,7 @@ export default function AdminDashboard() {
                                     <tr><td colSpan={7} style={{ padding: '2rem', textAlign: 'center' }}>Nenhuma reserva encontrada.</td></tr>
                                 ) : (
                                     reservations.map(res => (
-                                        <tr key={res.id} style={{ borderBottom: '1px solid #eee' }}>
+                                        <tr key={res.id} style={{ borderBottom: '1px solid #eee', background: isToday(new Date(res.createdAt)) ? '#e1f5fe' : 'transparent' }}>
                                             <td style={{ padding: '1rem' }}>{format(new Date(res.createdAt), 'dd/MM/yy HH:mm')}</td>
                                             <td style={{ padding: '1rem' }}>
                                                 <strong>{res.name}</strong><br />
