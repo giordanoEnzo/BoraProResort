@@ -139,6 +139,7 @@ export default function AdminDashboard() {
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
                     <h2 style={{ fontSize: '2rem', fontWeight: 'bold' }}>Painel Administrativo</h2>
                     <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+                        <Link href="/admin/analytics" className="btn btn-secondary" style={{ background: '#e1bee7', color: '#4a148c', flexGrow: 1, textAlign: 'center' }}>Sensores</Link>
                         <Link href="/admin/promotions" className="btn btn-secondary" style={{ background: '#fbc02d', flexGrow: 1, textAlign: 'center' }}>Gerenciar Promoções</Link>
                         <Link href="/admin/resorts" className="btn btn-primary" style={{ flexGrow: 1, textAlign: 'center' }}>Gerenciar Resorts</Link>
                         <Link href="/" className="btn btn-secondary" style={{ flexGrow: 1, textAlign: 'center' }}>Voltar ao Site</Link>
@@ -278,7 +279,7 @@ export default function AdminDashboard() {
                                                     <strong>{res.boardType ? `${res.boardType}` : 'Sem pensão'}</strong>
                                                     {res.parkTickets && (
                                                         <div style={{ marginTop: '4px', color: '#1565c0' }}>
-                                                            🎟 Parque: <strong>{res.parkName}</strong> ({res.parkAdults} Ad, {res.parkChildren} Cr, {res.parkBabies} Bb)
+                                                            Parque: <strong>{res.parkName}</strong> ({res.parkAdults} Ad, {res.parkChildren} Cr, {res.parkBabies} Bb)
                                                         </div>
                                                     )}
                                                 </div>
@@ -330,7 +331,7 @@ export default function AdminDashboard() {
                                                         title="Apagar reserva"
                                                         style={{ background: '#d32f2f', color: 'white', border: 'none', padding: '6px', borderRadius: '4px', cursor: 'pointer', fontSize: '0.8rem', marginTop: '4px' }}
                                                     >
-                                                        🗑 Apagar
+                                                        Apagar
                                                     </button>
                                                 </div>
                                             </td>

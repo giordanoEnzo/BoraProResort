@@ -4,6 +4,8 @@ import { Assistant } from 'next/font/google'
 import './globals.css'
 import Header from '../components/Header'
 import Footer from '../components/Footer'
+import CookieBanner from '../components/CookieBanner'
+import AnalyticsTracker from '../components/AnalyticsTracker'
 
 const assistant = Assistant({
   subsets: ['latin'],
@@ -28,6 +30,8 @@ export default function RootLayout({
         <Header />
         <main>{children}</main>
         <Footer />
+        <CookieBanner />
+        <AnalyticsTracker />
       </body>
     </html>
   )

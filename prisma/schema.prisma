@@ -69,3 +69,14 @@ model Promotion {
   dinner      Boolean  @default(false)
   createdAt   DateTime @default(now())
 }
+
+model AnalyticsEvent {
+  id          String   @id @default(uuid())
+  sessionId   String?  // Optional session ID if accepted cookies
+  eventType   String   // 'pageview', 'click', 'time_on_page'
+  path        String   // Path URL
+  targetId    String?  // Clicked element ID
+  targetText  String?  // Clicked element text content
+  duration    Int?     // Time spent on page in seconds
+  createdAt   DateTime @default(now())
+}
