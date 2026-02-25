@@ -25,24 +25,74 @@ export default function AnalyticsDashboard() {
     const [stats, setStats] = useState<Stats | null>(null)
     const [loading, setLoading] = useState(true)
 
+    const [page, setPage] = useState(1)
+    const [limit, setLimit] = useState(50)
+    const [eventType, setEventType] = useState('all')
+    const [totalEvents, setTotalEvents] = useState(0)
+    const [totalPages, setTotalPages] = useState(1)
+
     const fetchData = async () => {
         setLoading(true)
         try {
-            const res = await fetch('/api/analytics')
+            const res = await fetch(`/api/analytics?page=${page}&limit=${limit}&type=${eventType}`)
             const data = await res.json()
             setEvents(data.events || [])
-            setStats(data.stats || null)
+            if (data.stats) setStats(data.stats)
+            if (data.totalEvents !== undefined) setTotalEvents(data.totalEvents)
+            if (data.totalPages !== undefined) setTotalPages(data.totalPages)
         } catch (error) {
             console.error(error)
         }
         setLoading(false)
     }
 
+    const exportData = async () => {
+        try {
+            const res = await fetch(`/api/analytics?export=true&type=${eventType}`)
+            const data = await res.json()
+            const allEvents = data.events || []
+
+            if (allEvents.length === 0) {
+                alert('Nenhum dado para exportar.')
+                return
+            }
+
+            const header = ['ID', 'Tipo', 'Caminho', 'Data', 'ID do Alvo', 'Texto do Alvo', 'Duração (s)']
+            const rows = allEvents.map((ev: Event) => [
+                ev.id,
+                ev.eventType,
+                ev.path,
+                format(new Date(ev.createdAt), 'dd/MM/yyyy HH:mm:ss'),
+                ev.targetId || '',
+                ev.targetText || '',
+                ev.duration || ''
+            ])
+
+            const csvContent = [
+                header.join(';'),
+                ...rows.map((r: any[]) => r.map((c: any) => `"${String(c).replace(/"/g, '""')}"`).join(';'))
+            ].join('\n')
+
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
+            const url = URL.createObjectURL(blob)
+            const link = document.createElement('a')
+            link.setAttribute('href', url)
+            link.setAttribute('download', `sensores_${format(new Date(), 'dd-MM-yyyy_HH-mm')}.csv`)
+            link.style.visibility = 'hidden'
+            document.body.appendChild(link)
+            link.click()
+            document.body.removeChild(link)
+        } catch (error) {
+            console.error(error)
+            alert('Erro ao exportar dados.')
+        }
+    }
+
     useEffect(() => {
         fetchData()
         const interval = setInterval(fetchData, 30000) // update every 30s
         return () => clearInterval(interval)
-    }, [])
+    }, [page, limit, eventType])
 
     return (
         <div className="section" style={{ background: '#f5f5f5', minHeight: '100vh' }}>
@@ -91,7 +141,31 @@ export default function AnalyticsDashboard() {
                         </div>
 
                         <div className="card" style={{ padding: '1.5rem' }}>
-                            <h3 style={{ marginBottom: '1rem' }}>Tabela Bruta de Eventos (Últimos 200)</h3>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: '1rem' }}>
+                                <h3 style={{ margin: 0 }}>Tabela Bruta de Eventos</h3>
+                                <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', flexWrap: 'wrap' }}>
+                                    <select
+                                        value={eventType}
+                                        onChange={(e) => { setEventType(e.target.value); setPage(1); }}
+                                        style={{ padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }}
+                                    >
+                                        <option value="all">Todos os tipos</option>
+                                        <option value="pageview">Pageview</option>
+                                        <option value="click">Click</option>
+                                        <option value="read">Read</option>
+                                    </select>
+
+                                    <button
+                                        onClick={exportData}
+                                        style={{ padding: '0.5rem 1rem', background: '#2e7d32', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold' }}
+                                    >
+                                        Exportar Planilha (CSV)
+                                    </button>
+                                </div>
+                            </div>
+
+                            <p style={{ marginBottom: '1rem', color: '#666', fontSize: '0.9rem' }}>Mostrando {events.length} de {totalEvents} registros.</p>
+
                             <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
                                 <table style={{ width: '100%', minWidth: '800px', borderCollapse: 'collapse', fontSize: '0.9rem' }}>
                                     <thead>
@@ -124,6 +198,27 @@ export default function AnalyticsDashboard() {
                                     </tbody>
                                 </table>
                             </div>
+
+                            {/* Pagination */}
+                            {totalPages > 1 && (
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1.5rem' }}>
+                                    <button
+                                        onClick={() => setPage(p => Math.max(1, p - 1))}
+                                        disabled={page === 1}
+                                        style={{ padding: '0.5rem 1rem', background: page === 1 ? '#ccc' : '#1565c0', color: 'white', border: 'none', borderRadius: '4px', cursor: page === 1 ? 'not-allowed' : 'pointer' }}
+                                    >
+                                        Anterior
+                                    </button>
+                                    <span style={{ fontSize: '0.9rem', color: '#666' }}>Página {page} de {totalPages}</span>
+                                    <button
+                                        onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                                        disabled={page === totalPages}
+                                        style={{ padding: '0.5rem 1rem', background: page === totalPages ? '#ccc' : '#1565c0', color: 'white', border: 'none', borderRadius: '4px', cursor: page === totalPages ? 'not-allowed' : 'pointer' }}
+                                    >
+                                        Próxima
+                                    </button>
+                                </div>
+                            )}
                         </div>
                     </>
                 )}

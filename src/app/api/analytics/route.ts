@@ -32,14 +32,33 @@ export async function GET(request: Request) {
     try {
         const urlParams = new URL(request.url).searchParams
         const type = urlParams.get('type') // Optional filter by type
+        const isExport = urlParams.get('export') === 'true'
+        const page = parseInt(urlParams.get('page') || '1', 10)
+        const limit = parseInt(urlParams.get('limit') || '50', 10)
 
-        const whereClause = type ? { eventType: type } : {}
+        const whereClause = type && type !== 'all' ? { eventType: type } : {}
 
-        const events = await prisma.analyticsEvent.findMany({
-            where: whereClause,
-            orderBy: { createdAt: 'desc' },
-            take: 200 // Limit for dashboard view
-        })
+        if (isExport) {
+            const allEvents = await prisma.analyticsEvent.findMany({
+                where: whereClause,
+                orderBy: { createdAt: 'desc' }
+            })
+            return NextResponse.json({ events: allEvents })
+        }
+
+        const skip = (page - 1) * limit
+
+        const [events, totalEvents] = await Promise.all([
+            prisma.analyticsEvent.findMany({
+                where: whereClause,
+                orderBy: { createdAt: 'desc' },
+                skip,
+                take: limit
+            }),
+            prisma.analyticsEvent.count({
+                where: whereClause
+            })
+        ])
 
         // Also compile some basic stats
         const groupByType = await prisma.analyticsEvent.groupBy({
@@ -65,7 +84,13 @@ export async function GET(request: Request) {
             take: 5
         })
 
-        return NextResponse.json({ events, stats: { groupByType, topPages, topClicks } })
+        return NextResponse.json({
+            events,
+            totalEvents,
+            totalPages: Math.ceil(totalEvents / limit),
+            currentPage: page,
+            stats: { groupByType, topPages, topClicks }
+        })
     } catch (error) {
         console.error(error)
         return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 })
