@@ -77,6 +77,13 @@ export default async function Home() {
                 hotel={promo.hotel}
                 duration={promo.duration}
                 imageUrl={promo.imageUrl}
+                peopleCount={promo.peopleCount}
+                flightInfo={promo.flightInfo}
+                serviceInfo={promo.serviceInfo}
+                description={promo.description}
+                breakfast={promo.breakfast}
+                lunch={promo.lunch}
+                dinner={promo.dinner}
               />
             ))}
           </div>
