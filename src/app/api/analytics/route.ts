@@ -35,8 +35,27 @@ export async function GET(request: Request) {
         const isExport = urlParams.get('export') === 'true'
         const page = parseInt(urlParams.get('page') || '1', 10)
         const limit = parseInt(urlParams.get('limit') || '50', 10)
+        const startDate = urlParams.get('startDate')
+        const endDate = urlParams.get('endDate')
 
-        const whereClause = type && type !== 'all' ? { eventType: type } : {}
+        const whereClause: any = type && type !== 'all' ? { eventType: type } : {}
+
+        if (startDate || endDate) {
+            whereClause.createdAt = {}
+            if (startDate) {
+                const start = new Date(startDate)
+                if (!isNaN(start.getTime())) {
+                    whereClause.createdAt.gte = start
+                }
+            }
+            if (endDate) {
+                const end = new Date(endDate)
+                if (!isNaN(end.getTime())) {
+                    end.setHours(23, 59, 59, 999)
+                    whereClause.createdAt.lte = end
+                }
+            }
+        }
 
         if (isExport) {
             const allEvents = await prisma.analyticsEvent.findMany({
@@ -61,8 +80,11 @@ export async function GET(request: Request) {
         ])
 
         // Also compile some basic stats
+        const dateWhereClause = whereClause.createdAt ? { createdAt: whereClause.createdAt } : {}
+
         const groupByType = await prisma.analyticsEvent.groupBy({
             by: ['eventType'],
+            where: dateWhereClause,
             _count: {
                 id: true
             }
@@ -70,7 +92,7 @@ export async function GET(request: Request) {
 
         const topPages = await prisma.analyticsEvent.groupBy({
             by: ['path'],
-            where: { eventType: 'pageview' },
+            where: { ...dateWhereClause, eventType: 'pageview' },
             _count: { id: true },
             orderBy: { _count: { id: 'desc' } },
             take: 5
@@ -78,7 +100,7 @@ export async function GET(request: Request) {
 
         const topClicks = await prisma.analyticsEvent.groupBy({
             by: ['targetText', 'path'],
-            where: { eventType: 'click', targetText: { not: null } },
+            where: { ...dateWhereClause, eventType: 'click', targetText: { not: null } },
             _count: { id: true },
             orderBy: { _count: { id: 'desc' } },
             take: 5

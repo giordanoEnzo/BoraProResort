@@ -28,13 +28,15 @@ export default function AnalyticsDashboard() {
     const [page, setPage] = useState(1)
     const [limit, setLimit] = useState(50)
     const [eventType, setEventType] = useState('all')
+    const [startDate, setStartDate] = useState('')
+    const [endDate, setEndDate] = useState('')
     const [totalEvents, setTotalEvents] = useState(0)
     const [totalPages, setTotalPages] = useState(1)
 
     const fetchData = async () => {
         setLoading(true)
         try {
-            const res = await fetch(`/api/analytics?page=${page}&limit=${limit}&type=${eventType}`)
+            const res = await fetch(`/api/analytics?page=${page}&limit=${limit}&type=${eventType}&startDate=${startDate}&endDate=${endDate}`)
             const data = await res.json()
             setEvents(data.events || [])
             if (data.stats) setStats(data.stats)
@@ -48,7 +50,7 @@ export default function AnalyticsDashboard() {
 
     const exportData = async () => {
         try {
-            const res = await fetch(`/api/analytics?export=true&type=${eventType}`)
+            const res = await fetch(`/api/analytics?export=true&type=${eventType}&startDate=${startDate}&endDate=${endDate}`)
             const data = await res.json()
             const allEvents = data.events || []
 
@@ -92,7 +94,7 @@ export default function AnalyticsDashboard() {
         fetchData()
         const interval = setInterval(fetchData, 30000) // update every 30s
         return () => clearInterval(interval)
-    }, [page, limit, eventType])
+    }, [page, limit, eventType, startDate, endDate])
 
     return (
         <div className="section" style={{ background: '#f5f5f5', minHeight: '100vh' }}>
@@ -144,6 +146,20 @@ export default function AnalyticsDashboard() {
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: '1rem' }}>
                                 <h3 style={{ margin: 0 }}>Tabela Bruta de Eventos</h3>
                                 <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', flexWrap: 'wrap' }}>
+                                    <input
+                                        type="date"
+                                        title="Data de Início"
+                                        value={startDate}
+                                        onChange={(e) => { setStartDate(e.target.value); setPage(1); }}
+                                        style={{ padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }}
+                                    />
+                                    <input
+                                        type="date"
+                                        title="Data de Término"
+                                        value={endDate}
+                                        onChange={(e) => { setEndDate(e.target.value); setPage(1); }}
+                                        style={{ padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }}
+                                    />
                                     <select
                                         value={eventType}
                                         onChange={(e) => { setEventType(e.target.value); setPage(1); }}

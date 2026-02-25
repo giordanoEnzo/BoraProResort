@@ -17,6 +17,9 @@ const assistant = Assistant({
 export const metadata: Metadata = {
   title: 'Bora Pro Resort | Experiências de Verão Memoráveis',
   description: 'Multipropriedades exclusivas em Olímpia, São Pedro e Barretos. Reserve sua estadia.',
+  icons: {
+    icon: '/logo.png',
+  },
 }
 
 export default function RootLayout({
