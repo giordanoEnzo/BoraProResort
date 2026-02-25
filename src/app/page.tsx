@@ -18,7 +18,7 @@ export default async function Home() {
         <div className="container text-center">
           <p className="subtitle" style={{ color: 'var(--color-primary)', textTransform: 'uppercase', letterSpacing: '2px', fontWeight: 'bold' }}>Sobre Nós</p>
           <h2>O seu refúgio de verão</h2>
-          <div className="grid grid-cols-2 text-left" style={{ maxWidth: '900px', margin: '2rem auto 0' }}>
+          <div className="grid-responsive text-left" style={{ maxWidth: '900px', margin: '2rem auto 0' }}>
             <div>
               <p>
                 A <strong>Bora Pro Resort</strong> é especializada em conectar você aos melhores destinos de águas quentes e lazer do interior de São Paulo. Nossa missão é proporcionar momentos de alegria, conforto sofisticado e aventura.
@@ -44,7 +44,7 @@ export default async function Home() {
             <p className="subtitle">Escolha seu destino ideal</p>
           </div>
 
-          <div className="grid grid-cols-3">
+          <div className="grid-responsive">
             {resorts.map(resort => (
               <ResortCard
                 key={resort.id}
@@ -67,7 +67,7 @@ export default async function Home() {
             <p style={{ opacity: 0.9 }}>Pacotes exclusivos selecionados para você</p>
           </div>
 
-          <div className="grid grid-cols-3">
+          <div className="grid-responsive">
             {promotions.map(promo => (
               <PromotionCard
                 key={promo.id}

@@ -14,14 +14,14 @@ export default function Header() {
         <header>
             <div className="container nav-container">
                 <Link href="/" className="logo">
-                    <div style={{ position: 'relative', width: '180px', height: '60px' }}>
+                    <div style={{ position: 'relative', width: '240px', height: '75px', transform: 'translateX(-10px)' }}>
                         <Image
                             src="/logo.png"
                             alt="Bora Pro Resort"
                             fill
-                            style={{ objectFit: 'contain' }}
+                            style={{ objectFit: 'contain', objectPosition: 'left center' }}
                             priority
-                            sizes="(max-width: 768px) 150px, 220px"
+                            sizes="(max-width: 768px) 180px, 260px"
                         />
                     </div>
                 </Link>

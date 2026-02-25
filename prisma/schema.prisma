@@ -39,6 +39,15 @@ model Reservation {
   phone         String
   email         String
   guests        Int
+  adults        Int      @default(1)
+  children      Int      @default(0)
+  babies        Int      @default(0)
+  boardType     String?
+  parkTickets   Boolean  @default(false)
+  parkName      String?
+  parkAdults    Int      @default(0)
+  parkChildren  Int      @default(0)
+  parkBabies    Int      @default(0)
   notes         String?
   status        String   @default("PENDING") // PENDING, CONFIRMED, CANCELLED
   createdAt     DateTime @default(now())

@@ -65,7 +65,7 @@ export default function ResortList() {
                     </div>
                 </div>
 
-                <div className="grid grid-cols-3">
+                <div className="grid-responsive">
                     {loading ? (
                         <p>Carregando...</p>
                     ) : resorts.length === 0 ? (

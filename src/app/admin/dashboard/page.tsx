@@ -13,6 +13,15 @@ interface Reservation {
     startDate: string
     endDate: string
     guests: number
+    adults: number
+    children: number
+    babies: number
+    boardType: string | null
+    parkTickets: boolean
+    parkName: string | null
+    parkAdults: number
+    parkChildren: number
+    parkBabies: number
     status: string
     resort: {
         name: string
@@ -101,6 +110,27 @@ export default function AdminDashboard() {
         }
     }
 
+    const handleDelete = async (id: string) => {
+        if (!confirm('Você tem ABSOLUTA certeza que deseja apagar esta reserva permanentemente?')) return
+
+        try {
+            const res = await fetch(`/api/reservations/${id}`, {
+                method: 'DELETE',
+            })
+
+            if (res.ok) {
+                fetchReservations()
+                fetchStats()
+            } else {
+                const err = await res.json()
+                alert(`Erro: ${err.error}`)
+            }
+        } catch (error) {
+            console.error(error)
+            alert("Erro ao apagar reserva.")
+        }
+    }
+
     const maxSales = stats?.salesPerMonth?.reduce((acc, curr) => Math.max(acc, curr.count), 0) || 1
 
     return (
@@ -117,20 +147,20 @@ export default function AdminDashboard() {
 
                 {/* KPI Cards */}
                 {stats && (
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1.5rem', marginBottom: '2rem' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.5rem', marginBottom: '2rem' }}>
                         <div className="card" style={{ padding: '1.5rem', borderLeft: '5px solid #fbc02d' }}>
-                            <h4 style={{ color: '#666', marginBottom: '0.5rem' }}>Em Negociação</h4>
-                            <div style={{ fontSize: '2rem', fontWeight: 'bold' }}>{stats.kpi.pending}</div>
+                            <h4 style={{ color: '#666', marginBottom: '0.5rem', fontSize: '1rem' }}>Em Negociação</h4>
+                            <div style={{ fontSize: '1.8rem', fontWeight: 'bold' }}>{stats.kpi.pending}</div>
                             <small>Reservas Pendentes</small>
                         </div>
                         <div className="card" style={{ padding: '1.5rem', borderLeft: '5px solid #2e7d32' }}>
-                            <h4 style={{ color: '#666', marginBottom: '0.5rem' }}>Confirmadas Total</h4>
-                            <div style={{ fontSize: '2rem', fontWeight: 'bold' }}>{stats.kpi.confirmed}</div>
+                            <h4 style={{ color: '#666', marginBottom: '0.5rem', fontSize: '1rem' }}>Confirmadas</h4>
+                            <div style={{ fontSize: '1.8rem', fontWeight: 'bold' }}>{stats.kpi.confirmed}</div>
                             <small>Vendas Completas</small>
                         </div>
                         <div className="card" style={{ padding: '1.5rem', borderLeft: '5px solid #1565c0' }}>
-                            <h4 style={{ color: '#666', marginBottom: '0.5rem' }}>Fechadas Este Mês</h4>
-                            <div style={{ fontSize: '2rem', fontWeight: 'bold' }}>{stats.kpi.closedThisMonth}</div>
+                            <h4 style={{ color: '#666', marginBottom: '0.5rem', fontSize: '1rem' }}>Este Mês</h4>
+                            <div style={{ fontSize: '1.8rem', fontWeight: 'bold' }}>{stats.kpi.closedThisMonth}</div>
                             <small>Performance Mensal</small>
                         </div>
                     </div>
@@ -138,7 +168,7 @@ export default function AdminDashboard() {
 
                 {/* Charts Section */}
                 {stats && (
-                    <div className="grid grid-cols-2" style={{ marginBottom: '2rem' }}>
+                    <div className="grid-responsive" style={{ marginBottom: '2rem' }}>
                         {/* Sales Chart */}
                         <div className="card" style={{ padding: '1.5rem' }}>
                             <h4 style={{ marginBottom: '1.5rem' }}>Vendas por Mês</h4>
@@ -201,13 +231,13 @@ export default function AdminDashboard() {
 
 
                 <div className="card" style={{ padding: '1.5rem', marginBottom: '2rem' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: '10px' }}>
                         <h4>Todas as Reservas</h4>
-                        <div style={{ display: 'flex', gap: '1rem' }}>
+                        <div style={{ display: 'flex', gap: '1rem', width: '100%' }}>
                             <select
                                 value={filterStatus}
                                 onChange={e => setFilterStatus(e.target.value)}
-                                style={{ padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }}
+                                style={{ padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc', flexGrow: 1 }}
                             >
                                 <option value="">Status: Todos</option>
                                 <option value="PENDING">Pendentes</option>
@@ -217,8 +247,8 @@ export default function AdminDashboard() {
                         </div>
                     </div>
 
-                    <div style={{ overflowX: 'auto' }}>
-                        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.9rem' }}>
+                    <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
+                        <table style={{ width: '100%', minWidth: '800px', borderCollapse: 'collapse', fontSize: '0.9rem' }}>
                             <thead>
                                 <tr style={{ background: '#f5f5f5', textAlign: 'left', borderBottom: '2px solid #ddd' }}>
                                     <th style={{ padding: '1rem' }}>Data Solicitação</th>
@@ -242,7 +272,16 @@ export default function AdminDashboard() {
                                             <td style={{ padding: '1rem' }}>
                                                 <strong>{res.name}</strong><br />
                                                 <a href={`mailto:${res.email}`} style={{ color: '#666' }}>{res.email}</a><br />
-                                                {res.phone} <span style={{ color: '#888' }}>({res.guests} pax)</span>
+                                                {res.phone}
+                                                <div style={{ color: '#888', fontSize: '0.8rem', marginTop: '4px' }}>
+                                                    {res.adults} Ad, {res.children} Cr, {res.babies} Bb<br />
+                                                    <strong>{res.boardType ? `${res.boardType}` : 'Sem pensão'}</strong>
+                                                    {res.parkTickets && (
+                                                        <div style={{ marginTop: '4px', color: '#1565c0' }}>
+                                                            🎟 Parque: <strong>{res.parkName}</strong> ({res.parkAdults} Ad, {res.parkChildren} Cr, {res.parkBabies} Bb)
+                                                        </div>
+                                                    )}
+                                                </div>
                                             </td>
                                             <td style={{ padding: '1rem' }}>{res.resort.name}</td>
                                             <td style={{ padding: '1rem' }}>
@@ -286,6 +325,13 @@ export default function AdminDashboard() {
                                                             Cancelar
                                                         </button>
                                                     )}
+                                                    <button
+                                                        onClick={() => handleDelete(res.id)}
+                                                        title="Apagar reserva"
+                                                        style={{ background: '#d32f2f', color: 'white', border: 'none', padding: '6px', borderRadius: '4px', cursor: 'pointer', fontSize: '0.8rem', marginTop: '4px' }}
+                                                    >
+                                                        🗑 Apagar
+                                                    </button>
                                                 </div>
                                             </td>
                                         </tr>

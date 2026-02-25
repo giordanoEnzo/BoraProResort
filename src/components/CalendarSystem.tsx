@@ -18,7 +18,7 @@ export default function CalendarSystem({ resortId }: CalendarSystemProps) {
     const [currentMonth, setCurrentMonth] = useState(new Date())
     const [selection, setSelection] = useState<{ start: Date | null; end: Date | null }>({ start: null, end: null })
     const [showForm, setShowForm] = useState(false)
-    const [formData, setFormData] = useState({ name: '', email: '', phone: '', guests: 1, notes: '' })
+    const [formData, setFormData] = useState({ name: '', email: '', phone: '', adults: 1, children: 0, babies: 0, boardChoice: 'sem_pensao', boardType: '', parkTicketsChoice: 'nao', parkName: '', parkAdults: 1, parkChildren: 0, parkBabies: 0, notes: '' })
     const [submitStatus, setSubmitStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
 
     // Configuration
@@ -96,7 +96,20 @@ export default function CalendarSystem({ resortId }: CalendarSystemProps) {
                     resortId,
                     startDate: selection.start,
                     endDate: selection.end,
-                    ...formData,
+                    name: formData.name,
+                    email: formData.email,
+                    phone: formData.phone,
+                    adults: formData.adults,
+                    children: formData.children,
+                    babies: formData.babies,
+                    guests: formData.adults + formData.children + formData.babies,
+                    boardType: formData.boardChoice === 'com_pensao' ? formData.boardType || 'Café da manhã' : null,
+                    parkTickets: formData.parkTicketsChoice === 'sim',
+                    parkName: formData.parkTicketsChoice === 'sim' ? formData.parkName : null,
+                    parkAdults: formData.parkTicketsChoice === 'sim' ? formData.parkAdults : 0,
+                    parkChildren: formData.parkTicketsChoice === 'sim' ? formData.parkChildren : 0,
+                    parkBabies: formData.parkTicketsChoice === 'sim' ? formData.parkBabies : 0,
+                    notes: formData.notes,
                 }),
             })
 
@@ -105,7 +118,7 @@ export default function CalendarSystem({ resortId }: CalendarSystemProps) {
             setSubmitStatus('success')
             setSelection({ start: null, end: null })
             setShowForm(false)
-            setFormData({ name: '', email: '', phone: '', guests: 1, notes: '' })
+            setFormData({ name: '', email: '', phone: '', adults: 1, children: 0, babies: 0, boardChoice: 'sem_pensao', boardType: '', parkTicketsChoice: 'nao', parkName: '', parkAdults: 1, parkChildren: 0, parkBabies: 0, notes: '' })
         } catch (error) {
             console.error(error)
             setSubmitStatus('error')
@@ -231,7 +244,7 @@ export default function CalendarSystem({ resortId }: CalendarSystemProps) {
                         ({differenceInCalendarDays(selection.end!, selection.start!) + 1} diárias)
                     </p>
 
-                    <div className="grid grid-cols-2" style={{ gap: '1rem' }}>
+                    <div className="grid-responsive" style={{ gap: '1rem', marginBottom: '1rem' }}>
                         <div>
                             <label style={{ display: 'block', fontSize: '0.8rem', marginBottom: '4px', color: '#666' }}>Nome Completo</label>
                             <input
@@ -248,7 +261,7 @@ export default function CalendarSystem({ resortId }: CalendarSystemProps) {
                                 style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #ddd' }}
                             />
                         </div>
-                        <div>
+                        <div style={{ gridColumn: 'span 2' }}>
                             <label style={{ display: 'block', fontSize: '0.8rem', marginBottom: '4px', color: '#666' }}>Telefone / WhatsApp</label>
                             <input
                                 type="tel" required
@@ -256,14 +269,111 @@ export default function CalendarSystem({ resortId }: CalendarSystemProps) {
                                 style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #ddd' }}
                             />
                         </div>
+                    </div>
+
+                    <div className="grid-responsive" style={{ gap: '1rem', marginBottom: '1rem' }}>
                         <div>
-                            <label style={{ display: 'block', fontSize: '0.8rem', marginBottom: '4px', color: '#666' }}>Qtd. Pessoas</label>
+                            <label style={{ display: 'block', fontSize: '0.8rem', marginBottom: '4px', color: '#666' }}>Adultos</label>
                             <input
                                 type="number" min="1" required
-                                value={formData.guests} onChange={e => setFormData({ ...formData, guests: parseInt(e.target.value) })}
+                                value={formData.adults} onChange={e => setFormData({ ...formData, adults: parseInt(e.target.value) || 0 })}
                                 style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #ddd' }}
                             />
                         </div>
+                        <div>
+                            <label style={{ display: 'block', fontSize: '0.8rem', marginBottom: '4px', color: '#666' }}>Crianças (7-12)</label>
+                            <input
+                                type="number" min="0" required
+                                value={formData.children} onChange={e => setFormData({ ...formData, children: parseInt(e.target.value) || 0 })}
+                                style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #ddd' }}
+                            />
+                        </div>
+                        <div>
+                            <label style={{ display: 'block', fontSize: '0.8rem', marginBottom: '4px', color: '#666' }}>Bebês (0-6)</label>
+                            <input
+                                type="number" min="0" required
+                                value={formData.babies} onChange={e => setFormData({ ...formData, babies: parseInt(e.target.value) || 0 })}
+                                style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #ddd' }}
+                            />
+                        </div>
+                    </div>
+
+                    <div style={{ marginBottom: '1rem' }}>
+                        <label style={{ display: 'block', fontSize: '0.8rem', marginBottom: '4px', color: '#666' }}>Pensão</label>
+                        <select
+                            value={formData.boardChoice}
+                            onChange={e => setFormData({ ...formData, boardChoice: e.target.value, boardType: e.target.value === 'sem_pensao' ? '' : 'Café da manhã' })}
+                            style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #ddd', marginBottom: formData.boardChoice === 'com_pensao' ? '1rem' : '0' }}
+                        >
+                            <option value="sem_pensao">Sem pensão</option>
+                            <option value="com_pensao">Com pensão</option>
+                        </select>
+
+                        {formData.boardChoice === 'com_pensao' && (
+                            <div>
+                                <label style={{ display: 'block', fontSize: '0.8rem', marginBottom: '4px', color: '#666' }}>Tipo de Pensão</label>
+                                <select
+                                    value={formData.boardType}
+                                    onChange={e => setFormData({ ...formData, boardType: e.target.value })}
+                                    style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #ddd' }}
+                                >
+                                    <option value="Café da manhã">Café da manhã</option>
+                                    <option value="Meia pensão">Meia pensão</option>
+                                    <option value="Pensão completa">Pensão completa</option>
+                                </select>
+                            </div>
+                        )}
+                    </div>
+                    <div style={{ marginBottom: '1rem' }}>
+                        <label style={{ display: 'block', fontSize: '0.8rem', marginBottom: '4px', color: '#666' }}>Deseja ingresso para parque?</label>
+                        <select
+                            value={formData.parkTicketsChoice}
+                            onChange={e => setFormData({ ...formData, parkTicketsChoice: e.target.value })}
+                            style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #ddd', marginBottom: formData.parkTicketsChoice === 'sim' ? '1rem' : '0' }}
+                        >
+                            <option value="nao">Não</option>
+                            <option value="sim">Sim</option>
+                        </select>
+
+                        {formData.parkTicketsChoice === 'sim' && (
+                            <div style={{ background: '#f0f8ff', padding: '1rem', borderRadius: '8px', border: '1px solid #cce5ff' }}>
+                                <div style={{ marginBottom: '1rem' }}>
+                                    <label style={{ display: 'block', fontSize: '0.8rem', marginBottom: '4px', color: '#666' }}>Nome do Parque</label>
+                                    <input
+                                        type="text" required
+                                        placeholder="Ex: Beto Carrero World"
+                                        value={formData.parkName} onChange={e => setFormData({ ...formData, parkName: e.target.value })}
+                                        style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #b8daff' }}
+                                    />
+                                </div>
+                                <div className="grid-responsive" style={{ gap: '1rem' }}>
+                                    <div>
+                                        <label style={{ display: 'block', fontSize: '0.8rem', marginBottom: '4px', color: '#666' }}>Adultos</label>
+                                        <input
+                                            type="number" min="1" required
+                                            value={formData.parkAdults} onChange={e => setFormData({ ...formData, parkAdults: parseInt(e.target.value) || 0 })}
+                                            style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #b8daff' }}
+                                        />
+                                    </div>
+                                    <div>
+                                        <label style={{ display: 'block', fontSize: '0.8rem', marginBottom: '4px', color: '#666' }}>Crianças</label>
+                                        <input
+                                            type="number" min="0" required
+                                            value={formData.parkChildren} onChange={e => setFormData({ ...formData, parkChildren: parseInt(e.target.value) || 0 })}
+                                            style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #b8daff' }}
+                                        />
+                                    </div>
+                                    <div>
+                                        <label style={{ display: 'block', fontSize: '0.8rem', marginBottom: '4px', color: '#666' }}>Bebês</label>
+                                        <input
+                                            type="number" min="0" required
+                                            value={formData.parkBabies} onChange={e => setFormData({ ...formData, parkBabies: parseInt(e.target.value) || 0 })}
+                                            style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #b8daff' }}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        )}
                     </div>
 
                     <div style={{ marginTop: '1rem' }}>
@@ -273,6 +383,10 @@ export default function CalendarSystem({ resortId }: CalendarSystemProps) {
                             value={formData.notes} onChange={e => setFormData({ ...formData, notes: e.target.value })}
                             style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #ddd', minHeight: '80px' }}
                         />
+                    </div>
+
+                    <div style={{ marginTop: '1.5rem', padding: '1rem', background: '#ffebee', borderRadius: '8px', borderLeft: '4px solid #f44336', color: '#c62828', fontSize: '0.85rem' }}>
+                        <strong>Aviso Importante:</strong> A solicitação de reserva não é a confirmação da reserva, a nossa equipe entrará em contato assim que possível.
                     </div>
 
                     <button type="submit" disabled={submitStatus === 'loading'} className="btn btn-primary" style={{ width: '100%', marginTop: '1.5rem', borderRadius: '8px' }}>

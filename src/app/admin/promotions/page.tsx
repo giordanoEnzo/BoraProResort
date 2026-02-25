@@ -64,7 +64,7 @@ export default function PromotionList() {
                     </div>
                 </div>
 
-                <div className="grid grid-cols-3">
+                <div className="grid-responsive">
                     {loading ? (
                         <p>Carregando...</p>
                     ) : promotions.length === 0 ? (

@@ -19,6 +19,7 @@
 
 html {
   scroll-behavior: smooth;
+  overflow-x: hidden;
 }
 
 body {
@@ -29,6 +30,9 @@ body {
   padding: 0;
   line-height: 1.6;
   font-size: 16px;
+  overflow-x: hidden;
+  /* Ensure no padding on body causes overflow */
+  width: 100%;
 }
 
 h1,
@@ -152,6 +156,18 @@ img {
 @media (min-width: 1024px) {
   .grid-cols-3 {
     grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.grid-responsive {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+}
+
+@media (min-width: 768px) {
+  .grid-responsive {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
