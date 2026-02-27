@@ -121,7 +121,7 @@ export default function PromotionCard(props: PromotionProps) {
 
                             <div style={{ marginBottom: '2rem' }}>
                                 <h3 style={{ marginBottom: '1rem', borderBottom: '2px solid #f0f0f0', paddingBottom: '0.5rem' }}>Geral</h3>
-                                <p style={{ lineHeight: '1.6', color: '#444' }}>{description || 'Sem descrição detalhada.'}</p>
+                                <p style={{ lineHeight: '1.6', color: '#444', whiteSpace: 'pre-wrap' }}>{description || 'Sem descrição detalhada.'}</p>
                             </div>
 
                             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '2rem', marginBottom: '2rem' }}>
