@@ -10,9 +10,10 @@ type ResortParams = Promise<{ slug: string }>
 
 export default async function ResortPage({ params }: { params: ResortParams }) {
     const { slug } = await params
+    const decodedSlug = decodeURIComponent(slug)
 
     const resortData = await prisma.resort.findUnique({
-        where: { slug },
+        where: { slug: decodedSlug },
         include: {
             images: true,
             reservations: {
