@@ -1,5 +1,5 @@
 import { prisma } from '@/lib/prisma'
-import ParkCard from '@/components/ParkCard'
+import ParkList from '@/components/ParkList'
 
 export const metadata = {
     title: 'Parques - Bora Pro Resort',
@@ -29,9 +29,7 @@ export default async function ParksPage() {
                                 Nenhum parque cadastrado no momento.
                             </div>
                         ) : (
-                            parks.map((park) => (
-                                <ParkCard key={park.id} park={park} />
-                            ))
+                            <ParkList parks={parks} />
                         )}
                     </div>
                 </div>
