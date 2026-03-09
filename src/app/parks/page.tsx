@@ -1,7 +1,5 @@
 import { prisma } from '@/lib/prisma'
 import ParkCard from '@/components/ParkCard'
-import Header from '@/components/Header'
-import Footer from '@/components/Footer'
 
 export const metadata = {
     title: 'Parques - Bora Pro Resort',
@@ -16,8 +14,6 @@ export default async function ParksPage() {
 
     return (
         <main style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-            <Header />
-
             <div style={{ flex: 1, background: '#f9f9f9', padding: '4rem 0' }}>
                 <div className="container">
                     <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
@@ -40,8 +36,6 @@ export default async function ParksPage() {
                     </div>
                 </div>
             </div>
-
-            <Footer />
         </main>
     )
 }
