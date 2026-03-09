@@ -1,12 +1,14 @@
 import { prisma } from '@/lib/prisma'
 import Hero from '@/components/Hero'
 import ResortCard from '@/components/ResortCard'
+import ParkPreviewCard from '@/components/ParkPreviewCard'
 import PromotionCard from '@/components/PromotionCard'
 
 export const dynamic = 'force-dynamic'
 
 export default async function Home() {
   const resorts = await prisma.resort.findMany()
+  const parks = await prisma.park.findMany({ take: 3, orderBy: { name: 'asc' } })
   // @ts-ignore - Prisma might complain about new model not being in types yet if not regenerated
   const promotions = await prisma.promotion.findMany({ orderBy: { createdAt: 'desc' } })
 
@@ -58,6 +60,30 @@ export default async function Home() {
           </div>
         </div>
       </section>
+
+      {/* Parks Section */}
+      {parks.length > 0 && (
+        <section className="section" style={{ background: '#f5f5f5' }} id="parques">
+          <div className="container">
+            <div className="text-center mb-4">
+              <h2>Parques e Atrações</h2>
+              <p className="subtitle">Diversão garantida para toda a família</p>
+            </div>
+
+            <div className="grid-responsive">
+              {parks.map(park => (
+                <ParkPreviewCard
+                  key={park.id}
+                  id={park.id}
+                  name={park.name}
+                  city={park.city}
+                  imageUrl={park.imageUrl}
+                />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Promotions Section */}
       <section className="section" id="promocoes" style={{ background: '#e33537', padding: '4rem 0' }}>

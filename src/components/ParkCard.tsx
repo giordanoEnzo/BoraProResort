@@ -41,6 +41,35 @@ export default function ParkCard({ park }: ParkCardProps) {
 
     return (
         <div className="card" style={{ marginBottom: '2rem', display: 'flex', flexDirection: 'column', overflow: 'hidden', padding: 0 }}>
+            {/* Capa Principal */}
+            <div
+                style={{ position: 'relative', width: '100%', height: '300px', cursor: 'pointer' }}
+                onClick={() => openLightbox(0)}
+            >
+                <Image
+                    src={park.imageUrl}
+                    alt={park.name}
+                    fill
+                    style={{ objectFit: 'cover' }}
+                    sizes="(max-width: 768px) 100vw, 1000px"
+                />
+                <div style={{
+                    position: 'absolute',
+                    bottom: '10px',
+                    right: '10px',
+                    background: 'rgba(0,0,0,0.6)',
+                    color: 'white',
+                    padding: '5px 10px',
+                    borderRadius: '4px',
+                    fontSize: '0.8rem',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '5px'
+                }}>
+                    <span>🔍</span> Ampliar Foto
+                </div>
+            </div>
+
             <div style={{ padding: '1.5rem' }}>
                 <h2 style={{ fontSize: '1.8rem', color: '#e33537', marginBottom: '0.2rem' }}>{park.name}</h2>
                 <h4 style={{ color: '#666', marginBottom: '1rem', fontWeight: 'normal' }}>{park.city}</h4>
@@ -64,6 +93,7 @@ export default function ParkCard({ park }: ParkCardProps) {
                         <div
                             key={i}
                             onClick={() => openLightbox(i)}
+                            className="park-gallery-img"
                             style={{
                                 position: 'relative',
                                 minWidth: '150px',
@@ -80,6 +110,21 @@ export default function ParkCard({ park }: ParkCardProps) {
                                 fill
                                 style={{ objectFit: 'cover' }}
                             />
+                            <div style={{
+                                position: 'absolute',
+                                inset: 0,
+                                background: 'rgba(0,0,0,0.2)',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                opacity: 0,
+                                transition: 'opacity 0.2s',
+                            }}
+                                onMouseEnter={(e) => e.currentTarget.style.opacity = '1'}
+                                onMouseLeave={(e) => e.currentTarget.style.opacity = '0'}
+                            >
+                                <span style={{ color: 'white', fontSize: '1.5rem' }}>🔍</span>
+                            </div>
                         </div>
                     ))}
                 </div>
