@@ -130,46 +130,93 @@ export default function ParkCard({ park }: ParkCardProps) {
                 </div>
             </div>
 
-            {/* Lightbox */}
+            {/* Lightbox / Carrossel de Expansão */}
             {lightboxOpen && (
                 <div style={{
                     position: 'fixed',
                     top: 0, left: 0, width: '100vw', height: '100vh',
-                    background: 'rgba(0,0,0,0.9)',
+                    background: 'rgba(0,0,0,0.95)',
                     zIndex: 9999,
                     display: 'flex',
                     alignItems: 'center',
-                    justifyContent: 'center'
+                    justifyContent: 'center',
+                    backdropFilter: 'blur(5px)'
                 }}>
                     <button
                         onClick={closeLightbox}
-                        style={{ position: 'absolute', top: '20px', right: '30px', background: 'none', border: 'none', color: 'white', fontSize: '3rem', cursor: 'pointer' }}
+                        style={{ position: 'absolute', top: '20px', right: '30px', background: 'rgba(255,255,255,0.1)', border: 'none', color: 'white', fontSize: '2rem', width: '50px', height: '50px', borderRadius: '50%', cursor: 'pointer', zIndex: 10001, display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'background 0.2s' }}
+                        onMouseOver={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.3)'}
+                        onMouseOut={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.1)'}
                     >
                         &times;
                     </button>
 
                     <button
                         onClick={prevImage}
-                        style={{ position: 'absolute', left: '20px', background: 'rgba(255,255,255,0.2)', border: 'none', color: 'white', fontSize: '2rem', padding: '1rem', borderRadius: '50%', cursor: 'pointer' }}
+                        style={{ position: 'absolute', left: '20px', background: 'rgba(255,255,255,0.15)', border: 'none', color: 'white', fontSize: '2.5rem', width: '60px', height: '60px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '50%', cursor: 'pointer', zIndex: 10001, transition: 'background 0.2s' }}
+                        onMouseOver={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.3)'}
+                        onMouseOut={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.15)'}
                     >
                         &lsaquo;
                     </button>
 
-                    <div style={{ position: 'relative', width: '80vw', height: '80vh' }}>
-                        <Image
-                            src={allImages[currentImageIndex]}
-                            alt={`${park.name} zoom foto`}
-                            fill
-                            style={{ objectFit: 'contain' }}
-                        />
+                    <div style={{ position: 'relative', width: '100vw', height: '100vh', overflow: 'hidden' }}>
+                        <div style={{
+                            display: 'flex',
+                            transition: 'transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1)',
+                            transform: `translateX(-${currentImageIndex * 100}vw)`,
+                            width: `${allImages.length * 100}vw`,
+                            height: '100%'
+                        }}>
+                            {allImages.map((src, idx) => (
+                                <div key={idx} style={{
+                                    width: '100vw',
+                                    height: '100%',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    padding: '5rem 80px', // Espaço para os botões e bordas
+                                }}>
+                                    <div style={{ position: 'relative', width: '100%', height: '100%', maxWidth: '1200px' }}>
+                                        <Image
+                                            src={src}
+                                            alt={`${park.name} zoom foto ${idx + 1}`}
+                                            fill
+                                            style={{ objectFit: 'contain' }}
+                                        />
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
                     </div>
 
                     <button
                         onClick={nextImage}
-                        style={{ position: 'absolute', right: '20px', background: 'rgba(255,255,255,0.2)', border: 'none', color: 'white', fontSize: '2rem', padding: '1rem', borderRadius: '50%', cursor: 'pointer' }}
+                        style={{ position: 'absolute', right: '20px', background: 'rgba(255,255,255,0.15)', border: 'none', color: 'white', fontSize: '2.5rem', width: '60px', height: '60px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '50%', cursor: 'pointer', zIndex: 10001, transition: 'background 0.2s' }}
+                        onMouseOver={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.3)'}
+                        onMouseOut={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.15)'}
                     >
                         &rsaquo;
                     </button>
+
+                    {/* Indicadores do carrossel */}
+                    <div style={{ position: 'absolute', bottom: '30px', left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: '8px', zIndex: 10001 }}>
+                        {allImages.map((_, idx) => (
+                            <button
+                                key={idx}
+                                onClick={() => setCurrentImageIndex(idx)}
+                                style={{
+                                    width: idx === currentImageIndex ? '24px' : '10px',
+                                    height: '10px',
+                                    borderRadius: '5px',
+                                    background: idx === currentImageIndex ? 'white' : 'rgba(255,255,255,0.5)',
+                                    border: 'none',
+                                    cursor: 'pointer',
+                                    transition: 'all 0.3s ease'
+                                }}
+                            />
+                        ))}
+                    </div>
                 </div>
             )}
         </div>
