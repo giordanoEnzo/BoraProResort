@@ -1,7 +1,7 @@
 
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, getDay, addMonths, isBefore, isAfter, isSameDay, isWithinInterval, startOfToday, addDays, differenceInCalendarDays } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 
@@ -20,6 +20,20 @@ export default function CalendarSystem({ resortId }: CalendarSystemProps) {
     const [showForm, setShowForm] = useState(false)
     const [formData, setFormData] = useState({ name: '', email: '', phone: '', adults: 1, children: 0, babies: 0, boardChoice: 'sem_pensao', boardType: '', parkTicketsChoice: 'nao', parkName: '', parkAdults: 1, parkChildren: 0, parkBabies: 0, notes: '' })
     const [submitStatus, setSubmitStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
+    const [parks, setParks] = useState<any[]>([])
+
+    useEffect(() => {
+        const fetchParks = async () => {
+            try {
+                const res = await fetch('/api/parks')
+                const data = await res.json()
+                setParks(Array.isArray(data) ? data : [])
+            } catch (error) {
+                console.error(error)
+            }
+        }
+        fetchParks()
+    }, [])
 
     // Configuration
     const today = startOfToday()
@@ -339,12 +353,18 @@ export default function CalendarSystem({ resortId }: CalendarSystemProps) {
                             <div style={{ background: '#f0f8ff', padding: '1rem', borderRadius: '8px', border: '1px solid #cce5ff' }}>
                                 <div style={{ marginBottom: '1rem' }}>
                                     <label style={{ display: 'block', fontSize: '0.8rem', marginBottom: '4px', color: '#666' }}>Nome do Parque</label>
-                                    <input
-                                        type="text" required
-                                        placeholder="Ex: Beto Carrero World"
+                                    <select
+                                        required
                                         value={formData.parkName} onChange={e => setFormData({ ...formData, parkName: e.target.value })}
-                                        style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #b8daff' }}
-                                    />
+                                        style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #b8daff', background: 'white' }}
+                                    >
+                                        <option value="">Selecione o parque</option>
+                                        {parks.map(park => (
+                                            <option key={park.id} value={`${park.name} - ${park.city}`}>
+                                                {park.name} - {park.city}
+                                            </option>
+                                        ))}
+                                    </select>
                                 </div>
                                 <div className="grid-responsive" style={{ gap: '1rem' }}>
                                     <div>

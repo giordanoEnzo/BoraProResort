@@ -80,3 +80,21 @@ model AnalyticsEvent {
   duration    Int?     // Time spent on page in seconds
   createdAt   DateTime @default(now())
 }
+
+model Park {
+  id                 String      @id @default(uuid())
+  name               String
+  slug               String      @unique
+  city               String
+  description        String      @default("")
+  attractionsDetails String
+  imageUrl           String
+  images             ParkImage[]
+}
+
+model ParkImage {
+  id        String   @id @default(uuid())
+  url       String
+  parkId    String
+  park      Park     @relation(fields: [parkId], references: [id], onDelete: Cascade)
+}

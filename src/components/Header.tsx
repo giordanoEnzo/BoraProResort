@@ -31,6 +31,7 @@ export default function Header() {
                     <Link href="/" className="nav-link">Início</Link>
                     <Link href="/#resorts" className="nav-link">Resorts</Link>
                     <Link href="/#promocoes" className="nav-link">Promoções</Link>
+                    <Link href="/parks" className="nav-link">Parques</Link>
                 </nav>
 
                 {/* Mobile Menu Button */}
@@ -43,6 +44,7 @@ export default function Header() {
                     <Link href="/" className="nav-link" onClick={toggleMenu}>Início</Link>
                     <Link href="/#resorts" className="nav-link" onClick={toggleMenu}>Resorts</Link>
                     <Link href="/#promocoes" className="nav-link" onClick={toggleMenu}>Promoções</Link>
+                    <Link href="/parks" className="nav-link" onClick={toggleMenu}>Parques</Link>
                 </div>
             </div>
         </header>
