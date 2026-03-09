@@ -17,19 +17,9 @@ interface ParkCardProps {
 }
 
 export default function ParkCard({ park }: ParkCardProps) {
-    const [lightboxOpen, setLightboxOpen] = useState(false)
     const [currentImageIndex, setCurrentImageIndex] = useState(0)
 
     const allImages = [park.imageUrl, ...(park.images?.map(i => i.url) || [])]
-
-    const openLightbox = (index: number) => {
-        setCurrentImageIndex(index)
-        setLightboxOpen(true)
-    }
-
-    const closeLightbox = () => {
-        setLightboxOpen(false)
-    }
 
     const nextImage = () => {
         setCurrentImageIndex((prev) => (prev + 1) % allImages.length)
@@ -41,33 +31,57 @@ export default function ParkCard({ park }: ParkCardProps) {
 
     return (
         <div className="card" style={{ marginBottom: '2rem', display: 'flex', flexDirection: 'column', overflow: 'hidden', padding: 0 }}>
-            {/* Capa Principal */}
-            <div
-                style={{ position: 'relative', width: '100%', height: '300px', cursor: 'pointer' }}
-                onClick={() => openLightbox(0)}
-            >
-                <Image
-                    src={park.imageUrl}
-                    alt={park.name}
-                    fill
-                    style={{ objectFit: 'cover' }}
-                    sizes="(max-width: 768px) 100vw, 1000px"
-                />
+            {/* Capa Principal - Carrossel Embutido */}
+            <div style={{ position: 'relative', width: '100%', height: '350px', backgroundColor: '#000', overflow: 'hidden' }}>
                 <div style={{
-                    position: 'absolute',
-                    bottom: '10px',
-                    right: '10px',
-                    background: 'rgba(0,0,0,0.6)',
-                    color: 'white',
-                    padding: '5px 10px',
-                    borderRadius: '4px',
-                    fontSize: '0.8rem',
                     display: 'flex',
-                    alignItems: 'center',
-                    gap: '5px'
+                    transition: 'transform 0.4s ease-in-out',
+                    transform: `translateX(-${currentImageIndex * 100}%)`,
+                    height: '100%',
+                    width: '100%'
                 }}>
-                    <span>🔍</span> Ampliar Foto
+                    {allImages.map((src, idx) => (
+                        <div key={idx} style={{ flexShrink: 0, width: '100%', height: '100%', position: 'relative' }}>
+                            <Image
+                                src={src}
+                                alt={`${park.name} foto ${idx + 1}`}
+                                fill
+                                style={{ objectFit: 'cover' }}
+                                sizes="(max-width: 768px) 100vw, 1000px"
+                            />
+                        </div>
+                    ))}
                 </div>
+
+                {/* Controles do Carrossel */}
+                {allImages.length > 1 && (
+                    <>
+                        <button
+                            onClick={prevImage}
+                            style={{
+                                position: 'absolute', top: '50%', left: '15px', transform: 'translateY(-50%)',
+                                background: 'rgba(255,255,255,0.8)', color: '#333', border: 'none',
+                                width: '40px', height: '40px', borderRadius: '50%', fontSize: '1.5rem',
+                                cursor: 'pointer', zIndex: 2, display: 'flex', alignItems: 'center',
+                                justifyContent: 'center', boxShadow: '0 2px 5px rgba(0,0,0,0.2)'
+                            }}
+                        >
+                            &lsaquo;
+                        </button>
+                        <button
+                            onClick={nextImage}
+                            style={{
+                                position: 'absolute', top: '50%', right: '15px', transform: 'translateY(-50%)',
+                                background: 'rgba(255,255,255,0.8)', color: '#333', border: 'none',
+                                width: '40px', height: '40px', borderRadius: '50%', fontSize: '1.5rem',
+                                cursor: 'pointer', zIndex: 2, display: 'flex', alignItems: 'center',
+                                justifyContent: 'center', boxShadow: '0 2px 5px rgba(0,0,0,0.2)'
+                            }}
+                        >
+                            &rsaquo;
+                        </button>
+                    </>
+                )}
             </div>
 
             <div style={{ padding: '1.5rem' }}>
@@ -85,136 +99,34 @@ export default function ParkCard({ park }: ParkCardProps) {
                 )}
             </div>
 
-            {/* Galeria */}
-            <div style={{ background: '#f5f5f5', padding: '1rem' }}>
-                <h4 style={{ marginBottom: '1rem', paddingLeft: '0.5rem' }}>Galeria de Fotos</h4>
-                <div style={{ display: 'flex', gap: '10px', overflowX: 'auto', paddingBottom: '10px' }}>
-                    {allImages.map((img, i) => (
-                        <div
-                            key={i}
-                            onClick={() => openLightbox(i)}
-                            className="park-gallery-img"
-                            style={{
-                                position: 'relative',
-                                minWidth: '150px',
-                                height: '100px',
-                                borderRadius: '8px',
-                                overflow: 'hidden',
-                                cursor: 'pointer',
-                                boxShadow: '0 2px 5px rgba(0,0,0,0.1)'
-                            }}
-                        >
-                            <Image
-                                src={img}
-                                alt={`${park.name} foto ${i + 1}`}
-                                fill
-                                style={{ objectFit: 'cover' }}
-                            />
-                            <div style={{
-                                position: 'absolute',
-                                inset: 0,
-                                background: 'rgba(0,0,0,0.2)',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                opacity: 0,
-                                transition: 'opacity 0.2s',
-                            }}
-                                onMouseEnter={(e) => e.currentTarget.style.opacity = '1'}
-                                onMouseLeave={(e) => e.currentTarget.style.opacity = '0'}
-                            >
-                                <span style={{ color: 'white', fontSize: '1.5rem' }}>🔍</span>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            </div>
-
-            {/* Lightbox / Carrossel de Expansão */}
-            {lightboxOpen && (
-                <div style={{
-                    position: 'fixed',
-                    top: 0, left: 0, width: '100vw', height: '100vh',
-                    background: 'rgba(0,0,0,0.95)',
-                    zIndex: 9999,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    backdropFilter: 'blur(5px)'
-                }}>
-                    <button
-                        onClick={closeLightbox}
-                        style={{ position: 'absolute', top: '20px', right: '30px', background: 'rgba(255,255,255,0.1)', border: 'none', color: 'white', fontSize: '2rem', width: '50px', height: '50px', borderRadius: '50%', cursor: 'pointer', zIndex: 10001, display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'background 0.2s' }}
-                        onMouseOver={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.3)'}
-                        onMouseOut={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.1)'}
-                    >
-                        &times;
-                    </button>
-
-                    <button
-                        onClick={prevImage}
-                        style={{ position: 'absolute', left: '20px', background: 'rgba(255,255,255,0.15)', border: 'none', color: 'white', fontSize: '2.5rem', width: '60px', height: '60px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '50%', cursor: 'pointer', zIndex: 10001, transition: 'background 0.2s' }}
-                        onMouseOver={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.3)'}
-                        onMouseOut={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.15)'}
-                    >
-                        &lsaquo;
-                    </button>
-
-                    <div style={{ position: 'relative', width: '100vw', height: '100vh', overflow: 'hidden' }}>
-                        <div style={{
-                            display: 'flex',
-                            transition: 'transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1)',
-                            transform: `translateX(-${currentImageIndex * 100}vw)`,
-                            width: `${allImages.length * 100}vw`,
-                            height: '100%'
-                        }}>
-                            {allImages.map((src, idx) => (
-                                <div key={idx} style={{
-                                    width: '100vw',
-                                    height: '100%',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    padding: '5rem 80px', // Espaço para os botões e bordas
-                                }}>
-                                    <div style={{ position: 'relative', width: '100%', height: '100%', maxWidth: '1200px' }}>
-                                        <Image
-                                            src={src}
-                                            alt={`${park.name} zoom foto ${idx + 1}`}
-                                            fill
-                                            style={{ objectFit: 'contain' }}
-                                        />
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-
-                    <button
-                        onClick={nextImage}
-                        style={{ position: 'absolute', right: '20px', background: 'rgba(255,255,255,0.15)', border: 'none', color: 'white', fontSize: '2.5rem', width: '60px', height: '60px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '50%', cursor: 'pointer', zIndex: 10001, transition: 'background 0.2s' }}
-                        onMouseOver={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.3)'}
-                        onMouseOut={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.15)'}
-                    >
-                        &rsaquo;
-                    </button>
-
-                    {/* Indicadores do carrossel */}
-                    <div style={{ position: 'absolute', bottom: '30px', left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: '8px', zIndex: 10001 }}>
-                        {allImages.map((_, idx) => (
-                            <button
-                                key={idx}
-                                onClick={() => setCurrentImageIndex(idx)}
+            {/* Galeria de Miniaturas */}
+            {allImages.length > 1 && (
+                <div style={{ background: '#f5f5f5', padding: '1.5rem 1rem' }}>
+                    <h4 style={{ marginBottom: '1rem', paddingLeft: '0.5rem', fontSize: '1rem', color: '#555' }}>Mais Fotos</h4>
+                    <div style={{ display: 'flex', gap: '12px', overflowX: 'auto', paddingBottom: '10px' }}>
+                        {allImages.map((img, i) => (
+                            <div
+                                key={i}
+                                onClick={() => setCurrentImageIndex(i)}
                                 style={{
-                                    width: idx === currentImageIndex ? '24px' : '10px',
-                                    height: '10px',
-                                    borderRadius: '5px',
-                                    background: idx === currentImageIndex ? 'white' : 'rgba(255,255,255,0.5)',
-                                    border: 'none',
+                                    position: 'relative',
+                                    minWidth: '100px',
+                                    height: '75px',
+                                    borderRadius: '6px',
+                                    overflow: 'hidden',
                                     cursor: 'pointer',
-                                    transition: 'all 0.3s ease'
+                                    boxShadow: currentImageIndex === i ? '0 0 0 3px #e33537' : '0 1px 3px rgba(0,0,0,0.1)',
+                                    opacity: currentImageIndex === i ? 1 : 0.6,
+                                    transition: 'all 0.2s ease'
                                 }}
-                            />
+                            >
+                                <Image
+                                    src={img}
+                                    alt={`${park.name} miniatura ${i + 1}`}
+                                    fill
+                                    style={{ objectFit: 'cover' }}
+                                />
+                            </div>
                         ))}
                     </div>
                 </div>
