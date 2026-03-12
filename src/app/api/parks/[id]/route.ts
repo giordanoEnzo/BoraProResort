@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server'
+import { revalidatePath } from 'next/cache'
 import { prisma } from '@/lib/prisma'
 
 export async function GET(
@@ -68,6 +69,9 @@ export async function DELETE(
         await prisma.park.delete({
             where: { id }
         })
+        revalidatePath('/')
+        revalidatePath('/parks')
+
         return new NextResponse(null, { status: 204 })
     } catch (error) {
         return NextResponse.json({ error: 'Failed to delete park' }, { status: 500 })

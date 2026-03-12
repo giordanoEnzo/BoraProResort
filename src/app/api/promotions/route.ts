@@ -1,5 +1,6 @@
 
 import { NextResponse } from 'next/server'
+import { revalidatePath } from 'next/cache'
 import { prisma } from '@/lib/prisma'
 
 export async function GET() {
@@ -34,6 +35,8 @@ export async function POST(request: Request) {
                 dinner: Boolean(dinner),
             }
         })
+
+        revalidatePath('/')
 
         return NextResponse.json(promotion)
     } catch (error) {

@@ -1,5 +1,6 @@
 
 import { NextResponse } from 'next/server'
+import { revalidatePath } from 'next/cache'
 import { prisma } from '@/lib/prisma'
 
 export async function GET(request: Request, props: { params: Promise<{ id: string }> }) {
@@ -57,6 +58,9 @@ export async function PUT(request: Request, props: { params: Promise<{ id: strin
             include: { images: true }
         })
 
+        revalidatePath('/')
+        revalidatePath(`/resorts/${updatedResort.slug}`)
+
         return NextResponse.json(updatedResort)
     } catch (error) {
         console.error('Error updating resort:', error)
@@ -75,6 +79,10 @@ export async function DELETE(request: Request, props: { params: Promise<{ id: st
         await prisma.resort.delete({
             where: { id: params.id }
         })
+        revalidatePath('/')
+        // Note: Specific resort page revalidation would require the slug. 
+        // For deletion, revalidating the home page is usually sufficient for listing.
+
         return NextResponse.json({ success: true })
     } catch (error) {
         console.error('Error deleting resort:', error)

@@ -1,6 +1,8 @@
 import { prisma } from '@/lib/prisma'
 import ParkList from '@/components/ParkList'
 
+export const dynamic = 'force-dynamic'
+
 export const metadata = {
     title: 'Parques - Bora Pro Resort',
     description: 'Conheça nossos parques incríveis para você e sua família.',
