@@ -40,8 +40,19 @@ export default function CalendarSystem({ resortId }: CalendarSystemProps) {
 
     const isHighSeason = (date: Date) => {
         const month = date.getMonth()
+        const day = date.getDate()
+        const year = date.getFullYear()
+
         // Jan(0), Feb(1), Jul(6), Dec(11)
-        return [0, 1, 6, 11].includes(month)
+        if ([0, 1, 6, 11].includes(month)) return true
+
+        // Festa do Peão de Barretos 2026
+        if (year === 2026 && month === 7) {
+            if (day >= 20 && day <= 23) return true
+            if (day >= 27 && day <= 30) return true
+        }
+
+        return false
     }
 
     const isHoliday = (date: Date) => {
@@ -51,13 +62,21 @@ export default function CalendarSystem({ resortId }: CalendarSystemProps) {
         // Fixed holidays (Day-MonthIndex)
         // 1/1, 21/4, 1/5, 7/9, 12/10, 2/11, 15/11, 25/12
         const holidays = [
-            "1-0", "21-3", "1-4", "7-8", "12-9", "2-10", "15-10", "25-11"
+            "1-0", "21-3", "1-4", "7-8", "12-9", "12-9", "2-10", "15-10", "20-10", "25-11"
         ]
-        // Add specific variable dates for 2026/2027 if needed, keeping simple for now
-        return holidays.includes(`${d}-${m}`)
+        
+        // Variable date holidays for 2026
+        const variableHolidays2026 = [
+            "3-3", // Sexta-feira Santa (Apr 3)
+            "4-5", // Corpus Christi (Jun 4)
+        ]
+
+        return holidays.includes(`${d}-${m}`) || (date.getFullYear() === 2026 && variableHolidays2026.includes(`${d}-${m}`))
     }
 
     const getDayType = (date: Date): DayType => {
+        const currentYear = new Date().getFullYear()
+        if (date.getFullYear() !== currentYear) return 'disabled'
         if (isBefore(date, addDays(today, 1))) return 'disabled'
         if (isHoliday(date)) return 'holiday'
         if (isHighSeason(date)) return 'highSeason'

@@ -8,7 +8,7 @@ export const dynamic = 'force-dynamic'
 
 export default async function Home() {
   const resorts = await prisma.resort.findMany()
-  const parks = await prisma.park.findMany({ take: 3, orderBy: { name: 'asc' } })
+  const parks = await prisma.park.findMany({ orderBy: { name: 'asc' } })
   // @ts-ignore - Prisma might complain about new model not being in types yet if not regenerated
   const promotions = await prisma.promotion.findMany({ orderBy: { createdAt: 'desc' } })
 
