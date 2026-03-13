@@ -3,6 +3,7 @@ import Hero from '@/components/Hero'
 import ResortCard from '@/components/ResortCard'
 import ParkPreviewCard from '@/components/ParkPreviewCard'
 import PromotionCard from '@/components/PromotionCard'
+import Testimonials from '@/components/Testimonials'
 
 export const dynamic = 'force-dynamic'
 
@@ -84,6 +85,9 @@ export default async function Home() {
           </div>
         </section>
       )}
+
+      {/* Testimonials Section */}
+      <Testimonials />
 
       {/* Promotions Section */}
       <section className="section" id="promocoes" style={{ background: '#e33537', padding: '4rem 0' }}>
