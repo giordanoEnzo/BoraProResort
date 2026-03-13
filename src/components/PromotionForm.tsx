@@ -9,6 +9,7 @@ interface PromotionFormProps {
     initialData?: {
         id?: string
         title: string
+        city: string
         price: string
         duration: string
         hotel: string
@@ -28,6 +29,7 @@ export default function PromotionForm({ initialData }: PromotionFormProps) {
     const [loading, setLoading] = useState(false)
     const [formData, setFormData] = useState({
         title: initialData?.title || '',
+        city: initialData?.city || '',
         price: initialData?.price || '',
         duration: initialData?.duration || '',
         hotel: initialData?.hotel || '',
@@ -106,6 +108,15 @@ export default function PromotionForm({ initialData }: PromotionFormProps) {
                     <input
                         type="text" required
                         value={formData.title} onChange={e => setFormData({ ...formData, title: e.target.value })}
+                        style={{ width: '100%', padding: '0.8rem', borderRadius: '6px', border: '1px solid #ccc' }}
+                    />
+                </div>
+                <div>
+                    <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>Cidade</label>
+                    <input
+                        type="text" required
+                        placeholder="Ex: Gramado"
+                        value={formData.city} onChange={e => setFormData({ ...formData, city: e.target.value })}
                         style={{ width: '100%', padding: '0.8rem', borderRadius: '6px', border: '1px solid #ccc' }}
                     />
                 </div>

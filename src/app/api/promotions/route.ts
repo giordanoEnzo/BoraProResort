@@ -17,11 +17,12 @@ export async function GET() {
 export async function POST(request: Request) {
     try {
         const body = await request.json()
-        const { title, price, duration, hotel, peopleCount, flightInfo, serviceInfo, description, imageUrl, breakfast, lunch, dinner } = body
+        const { title, city, price, duration, hotel, peopleCount, flightInfo, serviceInfo, description, imageUrl, breakfast, lunch, dinner } = body
 
         const promotion = await prisma.promotion.create({
             data: {
                 title,
+                city,
                 price,
                 duration,
                 hotel,

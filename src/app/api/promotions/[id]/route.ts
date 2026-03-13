@@ -24,12 +24,13 @@ export async function PUT(request: Request, props: Props) {
     const params = await props.params;
     try {
         const body = await request.json()
-        const { title, price, duration, hotel, peopleCount, flightInfo, serviceInfo, description, imageUrl, breakfast, lunch, dinner } = body
+        const { title, city, price, duration, hotel, peopleCount, flightInfo, serviceInfo, description, imageUrl, breakfast, lunch, dinner } = body
 
         const updated = await prisma.promotion.update({
             where: { id: params.id },
             data: {
                 title,
+                city,
                 price,
                 duration,
                 hotel,

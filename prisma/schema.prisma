@@ -57,6 +57,7 @@ model Reservation {
 model Promotion {
   id          String   @id @default(uuid())
   title       String
+  city        String   @default("")
   price       String
   duration    String
   hotel       String

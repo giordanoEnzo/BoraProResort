@@ -29,8 +29,8 @@ export default function Header() {
                 {/* Desktop Nav */}
                 <nav className="nav-links">
                     <Link href="/" className="nav-link">Início</Link>
-                    <Link href="/#resorts" className="nav-link">Resorts</Link>
-                    <Link href="/#promocoes" className="nav-link">Promoções</Link>
+                    <Link href="/resorts" className="nav-link">Resorts</Link>
+                    <Link href="/promotions" className="nav-link">Promoções</Link>
                     <Link href="/parks" className="nav-link">Parques</Link>
                 </nav>
 
@@ -42,8 +42,8 @@ export default function Header() {
                 {/* Mobile Nav Overlay */}
                 <div className={`mobile-nav ${isMenuOpen ? 'open' : ''}`} style={isMenuOpen ? { transform: 'translateX(0)' } : {}}>
                     <Link href="/" className="nav-link" onClick={toggleMenu}>Início</Link>
-                    <Link href="/#resorts" className="nav-link" onClick={toggleMenu}>Resorts</Link>
-                    <Link href="/#promocoes" className="nav-link" onClick={toggleMenu}>Promoções</Link>
+                    <Link href="/resorts" className="nav-link" onClick={toggleMenu}>Resorts</Link>
+                    <Link href="/promotions" className="nav-link" onClick={toggleMenu}>Promoções</Link>
                     <Link href="/parks" className="nav-link" onClick={toggleMenu}>Parques</Link>
                 </div>
             </div>
