@@ -17,7 +17,7 @@ export async function GET() {
 export async function POST(request: Request) {
     try {
         const body = await request.json()
-        const { name, slug, city, description, attractionsDetails, imageUrl, images } = body
+        const { name, slug, city, description, attractionsDetails, imageUrl, isPinned, images } = body
 
         const existing = await prisma.park.findUnique({ where: { slug } })
         if (existing) {
@@ -32,6 +32,7 @@ export async function POST(request: Request) {
                 description,
                 attractionsDetails,
                 imageUrl,
+                isPinned,
                 images: {
                     create: (images || []).map((url: string) => ({ url }))
                 }

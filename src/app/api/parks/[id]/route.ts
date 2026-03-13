@@ -30,7 +30,7 @@ export async function PUT(
     try {
         const { id } = await params
         const body = await request.json()
-        const { name, slug, city, description, attractionsDetails, imageUrl, images } = body
+        const { name, slug, city, description, attractionsDetails, imageUrl, isPinned, images } = body
 
         // First, recreate images
         await prisma.parkImage.deleteMany({
@@ -46,12 +46,16 @@ export async function PUT(
                 description,
                 attractionsDetails,
                 imageUrl,
+                isPinned,
                 images: {
                     create: (images || []).map((url: string) => ({ url }))
                 }
             },
             include: { images: true }
         })
+
+        revalidatePath('/')
+        revalidatePath('/parks')
 
         return NextResponse.json(park)
     } catch (error) {

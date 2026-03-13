@@ -18,7 +18,7 @@ export async function GET() {
 export async function POST(request: Request) {
     try {
         const body = await request.json()
-        const { name, slug, city, description, imageUrl, images } = body
+        const { name, slug, city, description, imageUrl, isPinned, images } = body
 
         // Validate unique slug
         const existing = await prisma.resort.findUnique({ where: { slug } })
@@ -33,6 +33,7 @@ export async function POST(request: Request) {
                 city,
                 description,
                 imageUrl, // Main image
+                isPinned,
                 images: {
                     create: (images || []).map((url: string) => ({ url }))
                 }

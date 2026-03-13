@@ -4,12 +4,14 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
+import { Pin, PinOff } from 'lucide-react'
 
 interface Resort {
     id: string
     name: string
     city: string
     imageUrl: string
+    isPinned: boolean
 }
 
 export default function ResortList() {
@@ -54,6 +56,34 @@ export default function ResortList() {
         }
     }
 
+    const handlePin = async (resort: Resort) => {
+        const pinnedCount = resorts.filter(r => r.isPinned).length
+        
+        if (!resort.isPinned && pinnedCount >= 4) {
+            alert('Você pode fixar no máximo 4 resorts na página inicial.')
+            return
+        }
+
+        try {
+            const res = await fetch(`/api/resorts/${resort.id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    isPinned: !resort.isPinned
+                })
+            })
+
+            if (res.ok) {
+                fetchResorts()
+            } else {
+                alert('Erro ao atualizar status de destaque')
+            }
+        } catch (error) {
+            console.error(error)
+            alert('Erro ao atualizar status de destaque')
+        }
+    }
+
     return (
         <div className="section" style={{ background: '#f5f5f5', minHeight: '100vh' }}>
             <div className="container">
@@ -72,7 +102,31 @@ export default function ResortList() {
                         <p>Nenhum resort cadastrado.</p>
                     ) : (
                         resorts.map(resort => (
-                            <div key={resort.id} className="card" style={{ padding: '0', overflow: 'hidden' }}>
+                            <div key={resort.id} className="card" style={{ padding: '0', overflow: 'hidden', position: 'relative' }}>
+                                <button 
+                                    onClick={() => handlePin(resort)}
+                                    style={{ 
+                                        position: 'absolute', 
+                                        top: '10px', 
+                                        right: '10px', 
+                                        zIndex: 10,
+                                        background: resort.isPinned ? 'var(--color-primary)' : 'rgba(255,255,255,0.8)',
+                                        color: resort.isPinned ? 'white' : '#666',
+                                        border: 'none',
+                                        borderRadius: '50%',
+                                        width: '40px',
+                                        height: '40px',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        cursor: 'pointer',
+                                        boxShadow: '0 2px 5px rgba(0,0,0,0.2)',
+                                        transition: 'all 0.3s ease'
+                                    }}
+                                    title={resort.isPinned ? 'Desafixar da Home' : 'Fixar na Home'}
+                                >
+                                    {resort.isPinned ? <Pin size={20} /> : <PinOff size={20} />}
+                                </button>
                                 <div style={{ height: '200px', position: 'relative' }}>
                                     <Image
                                         src={resort.imageUrl || '/placeholder.jpg'}

@@ -3,12 +3,14 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
+import { Pin, PinOff } from 'lucide-react'
 
 interface Park {
     id: string
     name: string
     city: string
     imageUrl: string
+    isPinned: boolean
 }
 
 export default function ParkList() {
@@ -53,6 +55,34 @@ export default function ParkList() {
         }
     }
 
+    const handlePin = async (park: Park) => {
+        const pinnedCount = parks.filter(p => p.isPinned).length
+        
+        if (!park.isPinned && pinnedCount >= 4) {
+            alert('Você pode fixar no máximo 4 parques na página inicial.')
+            return
+        }
+
+        try {
+            const res = await fetch(`/api/parks/${park.id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    isPinned: !park.isPinned
+                })
+            })
+
+            if (res.ok) {
+                fetchParks()
+            } else {
+                alert('Erro ao atualizar status de destaque')
+            }
+        } catch (error) {
+            console.error(error)
+            alert('Erro ao atualizar status de destaque')
+        }
+    }
+
     return (
         <div className="section" style={{ background: '#f5f5f5', minHeight: '100vh' }}>
             <div className="container">
@@ -71,7 +101,31 @@ export default function ParkList() {
                         <p>Nenhum parque cadastrado.</p>
                     ) : (
                         parks.map(park => (
-                            <div key={park.id} className="card" style={{ padding: '0', overflow: 'hidden' }}>
+                            <div key={park.id} className="card" style={{ padding: '0', overflow: 'hidden', position: 'relative' }}>
+                                <button 
+                                    onClick={() => handlePin(park)}
+                                    style={{ 
+                                        position: 'absolute', 
+                                        top: '10px', 
+                                        right: '10px', 
+                                        zIndex: 10,
+                                        background: park.isPinned ? 'var(--color-primary)' : 'rgba(255,255,255,0.8)',
+                                        color: park.isPinned ? 'white' : '#666',
+                                        border: 'none',
+                                        borderRadius: '50%',
+                                        width: '40px',
+                                        height: '40px',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        cursor: 'pointer',
+                                        boxShadow: '0 2px 5px rgba(0,0,0,0.2)',
+                                        transition: 'all 0.3s ease'
+                                    }}
+                                    title={park.isPinned ? 'Desafixar da Home' : 'Fixar na Home'}
+                                >
+                                    {park.isPinned ? <Pin size={20} /> : <PinOff size={20} />}
+                                </button>
                                 <div style={{ height: '200px', position: 'relative' }}>
                                     <Image
                                         src={park.imageUrl || '/placeholder.jpg'}

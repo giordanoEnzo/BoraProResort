@@ -21,7 +21,7 @@ export async function PUT(request: Request, props: { params: Promise<{ id: strin
     const params = await props.params;
     try {
         const body = await request.json()
-        const { name, slug, city, description, imageUrl, images } = body
+        const { name, slug, city, description, imageUrl, isPinned, images } = body
 
         // If updating slug, check unique
         if (slug) {
@@ -40,7 +40,8 @@ export async function PUT(request: Request, props: { params: Promise<{ id: strin
             slug,
             city,
             description,
-            imageUrl
+            imageUrl,
+            isPinned
         }
 
         if (images) {

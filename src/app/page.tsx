@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { prisma } from '@/lib/prisma'
 import Hero from '@/components/Hero'
 import ResortCard from '@/components/ResortCard'
@@ -8,8 +9,22 @@ import Testimonials from '@/components/Testimonials'
 export const dynamic = 'force-dynamic'
 
 export default async function Home() {
-  const resorts = await prisma.resort.findMany()
-  const parks = await prisma.park.findMany({ orderBy: { name: 'asc' } })
+  // @ts-ignore
+  const resorts = await prisma.resort.findMany({
+    orderBy: [
+      { isPinned: 'desc' },
+      { name: 'asc' }
+    ],
+    take: 4
+  })
+  // @ts-ignore
+  const parks = await prisma.park.findMany({ 
+    orderBy: [
+      { isPinned: 'desc' },
+      { name: 'asc' }
+    ],
+    take: 4
+  })
   // @ts-ignore - Prisma might complain about new model not being in types yet if not regenerated
   const promotions = await prisma.promotion.findMany({ orderBy: { createdAt: 'desc' } })
 
@@ -59,6 +74,10 @@ export default async function Home() {
               />
             ))}
           </div>
+
+          <div className="text-center mt-4">
+            <Link href="/resorts" className="btn btn-primary">Ver Mais Resorts</Link>
+          </div>
         </div>
       </section>
 
@@ -81,6 +100,10 @@ export default async function Home() {
                   imageUrl={park.imageUrl}
                 />
               ))}
+            </div>
+
+            <div className="text-center mt-4">
+              <Link href="/parks" className="btn btn-secondary">Ver Mais Parques</Link>
             </div>
           </div>
         </section>

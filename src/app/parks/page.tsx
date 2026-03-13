@@ -1,41 +1,37 @@
 import { prisma } from '@/lib/prisma'
-import ParkList from '@/components/ParkList'
+import ParkPreviewCard from '@/components/ParkPreviewCard'
+import Link from 'next/link'
 
 export const dynamic = 'force-dynamic'
 
-export const metadata = {
-    title: 'Parques - Bora Pro Resort',
-    description: 'Conheça nossos parques incríveis para você e sua família.',
-}
-
 export default async function ParksPage() {
     const parks = await prisma.park.findMany({
-        include: { images: true },
         orderBy: { name: 'asc' }
     })
 
     return (
-        <main style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-            <div style={{ flex: 1, background: '#f9f9f9', padding: '4rem 0' }}>
-                <div className="container">
-                    <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
-                        <h1 style={{ fontSize: '2.5rem', color: '#e33537', marginBottom: '1rem' }}>Nossos Parques</h1>
-                        <p style={{ color: '#666', fontSize: '1.1rem', maxWidth: '800px', margin: '0 auto' }}>
-                            Explore as melhores opções de lazer e diversão. Conheça as principais atrações de cada parque e planeje seu passeio.
-                        </p>
-                    </div>
+        <div className="section" style={{ minHeight: '100vh', background: '#f5f5f5' }}>
+            <div className="container">
+                <div style={{ marginBottom: '3rem' }}>
+                    <Link href="/" style={{ color: 'var(--color-primary)', display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem', fontWeight: 'bold' }}>
+                        ← Voltar para Home
+                    </Link>
+                    <h1>Parques e Atrações</h1>
+                    <p className="subtitle">Confira todas as opções de diversão para sua família</p>
+                </div>
 
-                    <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
-                        {parks.length === 0 ? (
-                            <div style={{ textAlign: 'center', padding: '2rem', background: 'white', borderRadius: '12px' }}>
-                                Nenhum parque cadastrado no momento.
-                            </div>
-                        ) : (
-                            <ParkList parks={parks} />
-                        )}
-                    </div>
+                <div className="grid-responsive">
+                    {parks.map(park => (
+                        <ParkPreviewCard
+                            key={park.id}
+                            id={park.id}
+                            name={park.name}
+                            city={park.city}
+                            imageUrl={park.imageUrl}
+                        />
+                    ))}
                 </div>
             </div>
-        </main>
+        </div>
     )
 }
