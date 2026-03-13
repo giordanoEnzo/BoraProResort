@@ -6,6 +6,7 @@ import Header from '../components/Header'
 import Footer from '../components/Footer'
 import CookieBanner from '../components/CookieBanner'
 import AnalyticsTracker from '../components/AnalyticsTracker'
+import WhatsAppFloatingButton from '../components/WhatsAppFloatingButton'
 
 const assistant = Assistant({
   subsets: ['latin'],
@@ -35,6 +36,7 @@ export default function RootLayout({
         <Footer />
         <CookieBanner />
         <AnalyticsTracker />
+        <WhatsAppFloatingButton />
       </body>
     </html>
   )
