@@ -13,6 +13,7 @@ interface ParkFormProps {
         description: string
         attractionsDetails: string
         imageUrl: string
+        ticketLink?: string | null
         images: { url: string }[]
     }
 }
@@ -27,6 +28,7 @@ export default function ParkForm({ initialData }: ParkFormProps) {
         description: initialData?.description || '',
         attractionsDetails: initialData?.attractionsDetails || '',
         imageUrl: initialData?.imageUrl || '',
+        ticketLink: initialData?.ticketLink || '',
     })
     const [gallery, setGallery] = useState<string[]>(initialData?.images?.map(i => i.url) || [])
 
@@ -126,6 +128,16 @@ export default function ParkForm({ initialData }: ParkFormProps) {
                 <input
                     type="text" required
                     value={formData.slug} onChange={e => setFormData({ ...formData, slug: e.target.value })}
+                    style={{ width: '100%', padding: '0.8rem', borderRadius: '6px', border: '1px solid #ccc' }}
+                />
+            </div>
+
+            <div style={{ marginBottom: '1rem' }}>
+                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>Link de Compra de Ingresso (Opcional)</label>
+                <input
+                    type="url"
+                    value={formData.ticketLink} onChange={e => setFormData({ ...formData, ticketLink: e.target.value })}
+                    placeholder="https://exemplo.com/ingressos"
                     style={{ width: '100%', padding: '0.8rem', borderRadius: '6px', border: '1px solid #ccc' }}
                 />
             </div>

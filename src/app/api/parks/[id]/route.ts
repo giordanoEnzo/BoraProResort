@@ -30,7 +30,7 @@ export async function PUT(
     try {
         const { id } = await params
         const body = await request.json()
-        const { name, slug, city, description, attractionsDetails, imageUrl, isPinned, images } = body
+        const { name, slug, city, description, attractionsDetails, imageUrl, isPinned, ticketLink, images } = body
 
         // First, recreate images
         await prisma.parkImage.deleteMany({
@@ -47,6 +47,7 @@ export async function PUT(
                 attractionsDetails,
                 imageUrl,
                 isPinned,
+                ticketLink,
                 images: {
                     create: (images || []).map((url: string) => ({ url }))
                 }

@@ -92,6 +92,7 @@ model Park {
   attractionsDetails String
   imageUrl           String
   isPinned           Boolean     @default(false)
+  ticketLink         String?
   images             ParkImage[]
 }
 

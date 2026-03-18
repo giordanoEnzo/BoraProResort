@@ -63,16 +63,31 @@ export default async function ParkPage({ params }: { params: ParkParams }) {
                     <div>
                         <div className="card" style={{ padding: '2rem', textAlign: 'center' }}>
                             <h2 style={{ fontSize: '1.8rem', marginBottom: '1.5rem' }}>Garanta seu Ingresso</h2>
-                            <p style={{ marginBottom: '2rem' }}>Entre em contato conosco para consultar disponibilidade e valores para o <strong>{parkData.name}</strong>.</p>
-                            <a 
-                                href={whatsappLink}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="btn btn-primary"
-                                style={{ width: '100%', display: 'block', padding: '1rem' }}
-                            >
-                                Falar no WhatsApp
-                            </a>
+                            <p style={{ marginBottom: '2rem' }}>Escolha a melhor forma de garantir sua diversão no <strong>{parkData.name}</strong>:</p>
+                            
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                                {parkData.ticketLink && (
+                                    <a 
+                                        href={parkData.ticketLink}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="btn btn-primary"
+                                        style={{ width: '100%', display: 'block', padding: '1rem', background: '#2e7d32', borderColor: '#2e7d32' }}
+                                    >
+                                        Comprar Ingresso Online
+                                    </a>
+                                )}
+                                
+                                <a 
+                                    href={whatsappLink}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="btn btn-primary"
+                                    style={{ width: '100%', display: 'block', padding: '1rem' }}
+                                >
+                                    Falar no WhatsApp
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
