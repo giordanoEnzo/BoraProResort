@@ -3,12 +3,13 @@ import Link from 'next/link'
 
 interface ParkPreviewCardProps {
     id: string
+    slug: string
     name: string
     city: string
     imageUrl: string
 }
 
-export default function ParkPreviewCard({ name, city, imageUrl }: ParkPreviewCardProps) {
+export default function ParkPreviewCard({ name, city, imageUrl, slug }: ParkPreviewCardProps) {
     return (
         <div className="card resort-card">
             <div className="resort-card-image">
@@ -31,8 +32,8 @@ export default function ParkPreviewCard({ name, city, imageUrl }: ParkPreviewCar
                     {city}
                 </span>
                 <h3 style={{ margin: '0.5rem 0 1rem', fontSize: '1.5rem', flex: 1 }}>{name}</h3>
-                <Link href={`/parks`} className="btn btn-secondary" style={{ width: '100%', textAlign: 'center', display: 'block' }}>
-                    Ver Parques
+                <Link href={`/parks/${slug}`} className="btn btn-secondary" style={{ width: '100%', textAlign: 'center', display: 'block' }}>
+                    Ver Detalhes
                 </Link>
             </div>
         </div>

@@ -7,6 +7,7 @@ import Link from 'next/link'
 
 interface Park {
     id: string
+    slug: string
     name: string
     city: string
     imageUrl: string
@@ -55,6 +56,7 @@ export default function ParksContent({ initialParks, cities }: ParksContentProps
                             <ParkPreviewCard
                                 key={park.id}
                                 id={park.id}
+                                slug={park.slug}
                                 name={park.name}
                                 city={park.city}
                                 imageUrl={park.imageUrl}

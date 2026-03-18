@@ -95,6 +95,7 @@ export default async function Home() {
                 <ParkPreviewCard
                   key={park.id}
                   id={park.id}
+                  slug={park.slug}
                   name={park.name}
                   city={park.city}
                   imageUrl={park.imageUrl}
