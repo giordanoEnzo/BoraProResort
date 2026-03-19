@@ -33,6 +33,10 @@ const Footer = () => {
                             <span>CNPJ: 62.838.943/0001-45</span>
                         </div>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', opacity: 0.6, fontSize: '0.85rem', marginTop: '0.5rem' }}>
+                            <ShieldCheck size={16} color="var(--color-secondary)" />
+                            <span>CADASTUR: 62.838.943/0001-45</span>
+                        </div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', opacity: 0.6, fontSize: '0.85rem', marginTop: '0.5rem' }}>
                             <MapPin size={16} color="var(--color-secondary)" />
                             <span>Agência On-line</span>
                         </div>
