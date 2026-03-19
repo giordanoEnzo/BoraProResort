@@ -34,22 +34,32 @@ export default async function Home() {
 
       <section className="section" id="sobre">
         <div className="container text-center">
-          <p className="subtitle" style={{ color: 'var(--color-primary)', textTransform: 'uppercase', letterSpacing: '2px', fontWeight: 'bold' }}>Sobre Nós</p>
-          <h2>O seu refúgio de verão</h2>
-          <div className="grid-responsive text-left" style={{ maxWidth: '900px', margin: '2rem auto 0' }}>
-            <div>
-              <p>
-                A <strong>Bora Pro Resort</strong> é especializada em conectar você aos melhores destinos de águas quentes e lazer do interior de São Paulo. Nossa missão é proporcionar momentos de alegria, conforto sofisticado e aventura.
-              </p>
-            </div>
-            <div>
-              <ul style={{ listStyle: 'none', padding: 0 }}>
-                {['Tropicalidade vibrante', 'Estilo de vida premium', 'Aventura para a família', 'Conforto e sofisticação'].map(item => (
-                  <li key={item} className="mb-1 flex-center-gap">
-                    <span style={{ color: 'var(--color-secondary)', fontSize: '1.5rem' }}>☀</span> {item}
-                  </li>
-                ))}
-              </ul>
+          <p className="subtitle" style={{ color: 'var(--color-primary)', textTransform: 'uppercase', letterSpacing: '2px', fontWeight: 'bold' }}>Quem Somos</p>
+          <h2>Sua próxima experiência inesquecível começa aqui</h2>
+          
+          <div style={{ maxWidth: '900px', margin: '2rem auto 0', textAlign: 'left', lineHeight: '1.8' }}>
+            <p className="mb-2">
+              A <strong>BoraProResort</strong> nasceu do desejo de transformar viagens em experiências inesquecíveis. Sempre acreditamos que viajar vai muito além de escolher um destino, é sobre criar memórias, viver momentos únicos e realizar sonhos.
+            </p>
+            <p className="mb-2">
+              Com experiência no mercado de multipropriedade, hoje ajudamos famílias, casais e viajantes a planejarem suas viagens com praticidade, segurança e atendimento personalizado humanizado. Trabalhamos com resorts, cruzeiros, passagens aéreas e pacotes completos, sempre buscando as melhores opções para cada cliente.
+            </p>
+            <p className="mb-2">
+              Nosso diferencial está no cuidado em cada detalhe: desde o primeiro atendimento até o retorno da viagem. Aqui, você não compra apenas uma viagem, você conta com uma assessoria completa para viajar com tranquilidade.
+            </p>
+            <p className="mb-2">
+              Seja para um final de semana em família ou aquela viagem dos sonhos, a <strong>BoraProResort</strong> está pronta para te ajudar.
+            </p>
+            
+            <div className="text-center mt-4">
+              <Link 
+                href="https://wa.me/5511997468489?text=Olá, vim pelo site e gostaria de planejar minha próxima viagem!" 
+                target="_blank"
+                className="btn btn-primary flex-center-gap"
+                style={{ display: 'inline-flex', padding: '15px 30px' }}
+              >
+                📲 Fale com a gente e comece a planejar hoje mesmo
+              </Link>
             </div>
           </div>
         </div>
