@@ -7,9 +7,17 @@ export default function CookieBanner() {
     const [showBanner, setShowBanner] = useState(false)
 
     useEffect(() => {
-        const consent = localStorage.getItem('cookie_consent')
+        // Don't show on admin pages
+        if (typeof window !== 'undefined' && window.location.pathname.startsWith('/admin')) {
+            return // Do not show banner on admin pages
+        }
+
+        const consent = typeof window !== 'undefined' ? localStorage.getItem('cookie_consent') : null
         if (!consent) {
-            setShowBanner(true)
+            // Defer to avoid cascading renders warning
+            setTimeout(() => {
+                setShowBanner(true)
+            }, 0)
         }
     }, [])
 

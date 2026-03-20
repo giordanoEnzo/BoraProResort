@@ -21,7 +21,7 @@ interface PromotionProps {
 }
 
 export default function PromotionCard(props: PromotionProps) {
-    const { id, title, price, hotel, duration, imageUrl, peopleCount, flightInfo, serviceInfo, description, breakfast, lunch, dinner } = props
+    const { title, price, hotel, duration, imageUrl, peopleCount, flightInfo, serviceInfo, description, breakfast, lunch, dinner } = props
     const [isModalOpen, setIsModalOpen] = useState(false)
 
     // Helper text for WhatsApp

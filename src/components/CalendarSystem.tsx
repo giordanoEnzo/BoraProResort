@@ -2,14 +2,14 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { format, startOfMonth, endOfMonth, eachDayOfInterval, getDay, addMonths, isBefore, isAfter, isSameDay, isWithinInterval, startOfToday, addDays, differenceInCalendarDays } from 'date-fns'
+import { format, startOfMonth, endOfMonth, eachDayOfInterval, getDay, addMonths, isBefore, isSameDay, isWithinInterval, startOfToday, addDays, differenceInCalendarDays } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 
 // We don't need reservation status from props for blocking anymore, 
 // strictly for high season/holiday logic.
 interface CalendarSystemProps {
     resortId: string
-    reservations: any[] // Kept for interface compatibility but ignored for blocking
+    reservations: { startDate: string; endDate: string; status: string }[]
 }
 
 type DayType = 'disabled' | 'highSeason' | 'holiday' | 'available'
@@ -20,7 +20,7 @@ export default function CalendarSystem({ resortId }: CalendarSystemProps) {
     const [showForm, setShowForm] = useState(false)
     const [formData, setFormData] = useState({ name: '', email: '', phone: '', adults: 1, children: 0, babies: 0, boardChoice: 'sem_pensao', boardType: '', parkTicketsChoice: 'nao', parkName: '', parkAdults: 1, parkChildren: 0, parkBabies: 0, notes: '' })
     const [submitStatus, setSubmitStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
-    const [parks, setParks] = useState<any[]>([])
+    const [parks, setParks] = useState<{ id: string; name: string; city: string }[]>([])
 
     useEffect(() => {
         const fetchParks = async () => {
@@ -188,7 +188,7 @@ export default function CalendarSystem({ resortId }: CalendarSystemProps) {
                         let bg = '#f5f5f5'
                         let color = '#333'
                         let cursor = 'pointer'
-                        let border = 'none'
+                        const border = 'none'
 
                         if (type === 'disabled') {
                             bg = '#eee';

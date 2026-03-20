@@ -8,9 +8,7 @@ export default async function PromotionsPage() {
         orderBy: { createdAt: 'desc' }
     })
 
-    // @ts-ignore
     const cities = Array.from(new Set(promotions.map(p => p.city))).filter(Boolean).sort()
 
-    // @ts-ignore
     return <PromotionsContent initialPromotions={promotions} cities={cities} />
 }

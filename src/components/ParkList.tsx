@@ -46,7 +46,7 @@ export default function ParkList({ parks }: ParkListProps) {
 
             {filteredParks.length === 0 ? (
                 <div style={{ textAlign: 'center', padding: '2rem', background: 'white', borderRadius: '12px', color: '#666' }}>
-                    Nenhum parque encontrado para "{searchTerm}".
+                    Nenhum parque encontrado para &quot;{searchTerm}&quot;.
                 </div>
             ) : (
                 filteredParks.map((park) => (

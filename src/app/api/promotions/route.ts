@@ -9,7 +9,7 @@ export async function GET() {
             orderBy: { createdAt: 'desc' }
         })
         return NextResponse.json(promotions)
-    } catch (error) {
+    } catch {
         return NextResponse.json({ error: 'Failed to fetch promotions' }, { status: 500 })
     }
 }

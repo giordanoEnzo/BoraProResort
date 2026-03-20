@@ -13,12 +13,14 @@ function InnerTracker() {
     useEffect(() => {
         const consent = localStorage.getItem('cookie_consent')
         if (consent === 'accepted') {
-            let session = sessionStorage.getItem('analytics_session_id')
-            if (!session) {
-                session = crypto.randomUUID()
+            const session = sessionStorage.getItem('analytics_session_id') || crypto.randomUUID()
+            if (!sessionStorage.getItem('analytics_session_id')) {
                 sessionStorage.setItem('analytics_session_id', session)
             }
-            setSessionId(session)
+            // Defer to avoid cascading renders warning
+            setTimeout(() => {
+                setSessionId(prev => (prev !== session ? session : prev))
+            }, 0)
         }
     }, [])
 

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
 import { format } from 'date-fns'
 
@@ -26,14 +26,14 @@ export default function AnalyticsDashboard() {
     const [loading, setLoading] = useState(true)
 
     const [page, setPage] = useState(1)
-    const [limit, setLimit] = useState(50)
+    const [limit] = useState(50)
     const [eventType, setEventType] = useState('all')
     const [startDate, setStartDate] = useState('')
     const [endDate, setEndDate] = useState('')
     const [totalEvents, setTotalEvents] = useState(0)
     const [totalPages, setTotalPages] = useState(1)
 
-    const fetchData = async () => {
+    const fetchData = useCallback(async () => {
         setLoading(true)
         try {
             const res = await fetch(`/api/analytics?page=${page}&limit=${limit}&type=${eventType}&startDate=${startDate}&endDate=${endDate}`)
@@ -46,7 +46,7 @@ export default function AnalyticsDashboard() {
             console.error(error)
         }
         setLoading(false)
-    }
+    }, [page, limit, eventType, startDate, endDate])
 
     const exportData = async () => {
         try {
@@ -72,7 +72,7 @@ export default function AnalyticsDashboard() {
 
             const csvContent = [
                 header.join(';'),
-                ...rows.map((r: any[]) => r.map((c: any) => `"${String(c).replace(/"/g, '""')}"`).join(';'))
+                ...rows.map((r: (string | number)[]) => r.map((c: string | number) => `"${String(c).replace(/"/g, '""')}"`).join(';'))
             ].join('\n')
 
             const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
@@ -91,10 +91,20 @@ export default function AnalyticsDashboard() {
     }
 
     useEffect(() => {
-        fetchData()
-        const interval = setInterval(fetchData, 30000) // update every 30s
-        return () => clearInterval(interval)
-    }, [page, limit, eventType, startDate, endDate])
+        // Defer to avoid cascading renders warning
+        const timer = setTimeout(() => {
+            fetchData()
+        }, 0)
+        const interval = setInterval(() => { // Wrap setInterval's fetchData call in a setTimeout
+            setTimeout(() => {
+                fetchData()
+            }, 0);
+        }, 30000) // update every 30s
+        return () => {
+            clearTimeout(timer)
+            clearInterval(interval)
+        }
+    }, [fetchData])
 
     return (
         <div className="section" style={{ background: '#f5f5f5', minHeight: '100vh' }}>

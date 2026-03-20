@@ -57,7 +57,7 @@ const Testimonials = () => {
                                 {'★'.repeat(t.rating)}
                             </div>
                             <p style={{ fontStyle: 'italic', marginBottom: '1.5rem', flexGrow: 1, color: '#444', lineHeight: '1.6' }}>
-                                "{t.text}"
+                                &quot;{t.text}&quot;
                             </p>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                                 <div style={{ 

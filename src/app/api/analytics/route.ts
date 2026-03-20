@@ -38,7 +38,13 @@ export async function GET(request: Request) {
         const startDate = urlParams.get('startDate')
         const endDate = urlParams.get('endDate')
 
-        const whereClause: any = type && type !== 'all' ? { eventType: type } : {}
+        const whereClause: {
+            eventType?: string;
+            createdAt?: {
+                gte?: Date;
+                lte?: Date;
+            };
+        } = type && type !== 'all' ? { eventType: type } : {}
 
         if (startDate || endDate) {
             whereClause.createdAt = {}

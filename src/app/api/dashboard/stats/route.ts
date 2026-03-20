@@ -1,7 +1,7 @@
 
 import { prisma } from '@/lib/prisma'
 import { NextResponse } from 'next/server'
-import { startOfMonth, endOfMonth, eachDayOfInterval, format, parseISO } from 'date-fns'
+import { startOfMonth, endOfMonth, eachDayOfInterval, format } from 'date-fns'
 
 export async function GET() {
     try {
@@ -75,7 +75,7 @@ export async function GET() {
                     }
                     daysFrequency[monthKey][dayKey]++
                 })
-            } catch (e) {
+            } catch {
                 // Invalid dates might throw, ignore
             }
         })

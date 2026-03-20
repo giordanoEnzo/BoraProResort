@@ -1,7 +1,7 @@
 
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { format, isToday } from 'date-fns'
 import Link from 'next/link'
 
@@ -48,13 +48,13 @@ interface DayStats {
 export default function AdminDashboard() {
     const [reservations, setReservations] = useState<Reservation[]>([])
     const [stats, setStats] = useState<{ kpi: KPI, salesPerMonth: SalesData[], mostRequestedDays: DayStats[] } | null>(null)
-    const [filterResort, setFilterResort] = useState('')
+    const [filterResort] = useState('')
     const [filterStatus, setFilterStatus] = useState('')
     const [filterDateStart, setFilterDateStart] = useState('')
     const [filterDateEnd, setFilterDateEnd] = useState('')
     const [loading, setLoading] = useState(true)
 
-    const fetchReservations = async () => {
+    const fetchReservations = useCallback(async () => {
         setLoading(true)
         let url = '/api/reservations'
         const params = new URLSearchParams()
@@ -72,9 +72,9 @@ export default function AdminDashboard() {
             console.error(error)
         }
         setLoading(false)
-    }
+    }, [filterResort, filterStatus, filterDateStart, filterDateEnd])
 
-    const fetchStats = async () => {
+    const fetchStats = useCallback(async () => {
         try {
             const res = await fetch('/api/dashboard/stats')
             const data = await res.json()
@@ -82,12 +82,15 @@ export default function AdminDashboard() {
         } catch (error) {
             console.error(error)
         }
-    }
+    }, [])
 
     useEffect(() => {
-        fetchReservations()
-        fetchStats()
-    }, [filterResort, filterStatus, filterDateStart, filterDateEnd])
+        const timer = setTimeout(() => {
+            fetchReservations()
+            fetchStats()
+        }, 0)
+        return () => clearTimeout(timer)
+    }, [fetchReservations, fetchStats])
 
     const handleStatusChange = async (id: string, newStatus: string) => {
         if (!confirm(`Alterar status para ${newStatus}?`)) return

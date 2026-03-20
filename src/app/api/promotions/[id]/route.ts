@@ -15,7 +15,7 @@ export async function GET(request: Request, props: Props) {
         })
         if (!promotion) return NextResponse.json({ error: 'Promotion not found' }, { status: 404 })
         return NextResponse.json(promotion)
-    } catch (error) {
+    } catch {
         return NextResponse.json({ error: 'Failed to fetch promotion' }, { status: 500 })
     }
 }

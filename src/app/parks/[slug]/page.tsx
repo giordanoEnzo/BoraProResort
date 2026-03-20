@@ -1,7 +1,6 @@
 
 import { prisma } from '@/lib/prisma'
 import { notFound } from 'next/navigation'
-import Image from 'next/image'
 import Link from 'next/link'
 import ResortCarousel from '@/components/ResortCarousel'
 

@@ -10,7 +10,7 @@ export async function GET() {
             orderBy: { name: 'asc' }
         })
         return NextResponse.json(resorts)
-    } catch (error) {
+    } catch {
         return NextResponse.json({ error: 'Failed to fetch resorts' }, { status: 500 })
     }
 }

@@ -12,7 +12,7 @@ export async function GET(request: Request, props: { params: Promise<{ id: strin
         })
         if (!resort) return NextResponse.json({ error: 'Resort not found' }, { status: 404 })
         return NextResponse.json(resort)
-    } catch (error) {
+    } catch {
         return NextResponse.json({ error: 'Failed to fetch resort' }, { status: 500 })
     }
 }
@@ -35,7 +35,17 @@ export async function PUT(request: Request, props: { params: Promise<{ id: strin
         // Or handle add/remove more granularly.
         // For simplicity: If 'images' array is provided, we replace the gallery.
 
-        const updateData: any = {
+        const updateData: {
+            name?: string;
+            slug?: string;
+            city?: string;
+            description?: string;
+            imageUrl?: string;
+            isPinned?: boolean;
+            images?: {
+                create: { url: string }[]
+            }
+        } = {
             name,
             slug,
             city,

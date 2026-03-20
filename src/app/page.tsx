@@ -9,7 +9,6 @@ import Testimonials from '@/components/Testimonials'
 export const dynamic = 'force-dynamic'
 
 export default async function Home() {
-  // @ts-ignore
   const resorts = await prisma.resort.findMany({
     orderBy: [
       { isPinned: 'desc' },
@@ -17,7 +16,6 @@ export default async function Home() {
     ],
     take: 4
   })
-  // @ts-ignore
   const parks = await prisma.park.findMany({ 
     orderBy: [
       { isPinned: 'desc' },
@@ -25,7 +23,6 @@ export default async function Home() {
     ],
     take: 4
   })
-  // @ts-ignore - Prisma might complain about new model not being in types yet if not regenerated
   const promotions = await prisma.promotion.findMany({ orderBy: { createdAt: 'desc' } })
 
   return (

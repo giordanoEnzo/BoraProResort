@@ -1,6 +1,6 @@
 
 import { NextResponse } from 'next/server'
-import { writeFile } from 'fs/promises'
+import { writeFile, mkdir } from 'fs/promises'
 import path from 'path'
 
 export async function POST(request: Request) {
@@ -17,7 +17,7 @@ export async function POST(request: Request) {
 
     try {
         // Ensure directory exists
-        await require('fs/promises').mkdir(uploadDir, { recursive: true })
+        await mkdir(uploadDir, { recursive: true })
 
         await writeFile(path.join(uploadDir, filename), buffer)
         return NextResponse.json({ url: `/uploads/${filename}` })

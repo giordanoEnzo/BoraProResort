@@ -48,7 +48,14 @@ export async function GET(request: Request) {
     const createdAtStart = searchParams.get('createdAtStart')
     const createdAtEnd = searchParams.get('createdAtEnd')
 
-    const where: any = {}
+    const where: {
+        resortId?: string;
+        status?: string;
+        createdAt?: {
+            gte?: Date;
+            lte?: Date;
+        };
+    } = {}
     if (resortId) where.resortId = resortId
     if (status) where.status = status
 

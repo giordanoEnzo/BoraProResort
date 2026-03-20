@@ -18,7 +18,7 @@ export async function GET(
         }
 
         return NextResponse.json(park)
-    } catch (error) {
+    } catch {
         return NextResponse.json({ error: 'Failed to fetch park' }, { status: 500 })
     }
 }
@@ -78,7 +78,7 @@ export async function DELETE(
         revalidatePath('/parks')
 
         return new NextResponse(null, { status: 204 })
-    } catch (error) {
+    } catch {
         return NextResponse.json({ error: 'Failed to delete park' }, { status: 500 })
     }
 }
