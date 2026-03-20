@@ -36,8 +36,8 @@ const Footer = () => {
                             <Image
                                 src="/cadastur-certificado.png"
                                 alt="Certificado Cadastur"
-                                width={80}
-                                height={56}
+                                width={180}
+                                height={127}
                                 style={{ objectFit: 'contain', opacity: 0.9 }}
                             />
                         </div>
