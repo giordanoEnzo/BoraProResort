@@ -2,6 +2,7 @@
 import { NextResponse } from 'next/server'
 import { revalidatePath } from 'next/cache'
 import { prisma } from '@/lib/prisma'
+import { getSessionUser } from '@/lib/auth'
 
 export async function GET() {
     try {
@@ -17,13 +18,18 @@ export async function GET() {
 
 export async function POST(request: Request) {
     try {
+        const user = await getSessionUser()
+        if (!user) {
+            return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
+        }
+
         const body = await request.json()
         const { name, slug, city, description, imageUrl, isPinned, images } = body
 
         // Validate unique slug
         const existing = await prisma.resort.findUnique({ where: { slug } })
         if (existing) {
-            return NextResponse.json({ error: 'Slug already exists' }, { status: 400 })
+            return NextResponse.json({ error: 'Slug já existe' }, { status: 400 })
         }
 
         const resort = await prisma.resort.create({
@@ -34,6 +40,7 @@ export async function POST(request: Request) {
                 description,
                 imageUrl, // Main image
                 isPinned,
+                userId: user.id,
                 images: {
                     create: (images || []).map((url: string) => ({ url }))
                 }
@@ -46,6 +53,6 @@ export async function POST(request: Request) {
         return NextResponse.json(resort)
     } catch (error) {
         console.error('Error creating resort:', error)
-        return NextResponse.json({ error: 'Failed to create resort' }, { status: 500 })
+        return NextResponse.json({ error: 'Erro ao criar resort' }, { status: 500 })
     }
 }

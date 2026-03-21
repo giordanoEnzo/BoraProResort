@@ -4,6 +4,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
+import ConfirmModal from '@/components/ConfirmModal'
 
 interface Promotion {
     id: string
@@ -15,6 +16,8 @@ interface Promotion {
 export default function PromotionList() {
     const [promotions, setPromotions] = useState<Promotion[]>([])
     const [loading, setLoading] = useState(true)
+    const [modalOpen, setModalOpen] = useState(false)
+    const [promoToDelete, setPromoToDelete] = useState<string | null>(null)
 
     const fetchPromotions = async () => {
         setLoading(true)
@@ -37,11 +40,16 @@ export default function PromotionList() {
         fetchPromotions()
     }, [])
 
-    const handleDelete = async (id: string) => {
-        if (!confirm('Tem certeza que deseja excluir?')) return
+    const handleDeleteClick = (id: string) => {
+        setPromoToDelete(id)
+        setModalOpen(true)
+    }
+
+    const confirmDelete = async () => {
+        if (!promoToDelete) return
 
         try {
-            const res = await fetch(`/api/promotions/${id}`, { method: 'DELETE' })
+            const res = await fetch(`/api/promotions/${promoToDelete}`, { method: 'DELETE' })
             if (res.ok) {
                 fetchPromotions()
             } else {
@@ -50,6 +58,9 @@ export default function PromotionList() {
         } catch (error) {
             console.error(error)
             alert('Erro ao excluir')
+        } finally {
+            setModalOpen(false)
+            setPromoToDelete(null)
         }
     }
 
@@ -88,7 +99,7 @@ export default function PromotionList() {
                                             Editar
                                         </Link>
                                         <button
-                                            onClick={() => handleDelete(promo.id)}
+                                            onClick={() => handleDeleteClick(promo.id)}
                                             className="btn"
                                             style={{ background: '#d32f2f', color: 'white', padding: '8px 16px', fontSize: '0.8rem' }}
                                         >
@@ -101,6 +112,16 @@ export default function PromotionList() {
                     )}
                 </div>
             </div>
+
+            <ConfirmModal 
+                isOpen={modalOpen}
+                title="Excluir Promoção"
+                message="Tem certeza que deseja excluir esta promoção? Esta ação não pode ser desfeita."
+                onConfirm={confirmDelete}
+                onCancel={() => setModalOpen(false)}
+                confirmText="Excluir"
+                cancelText="Cancelar"
+            />
         </div>
     )
 }

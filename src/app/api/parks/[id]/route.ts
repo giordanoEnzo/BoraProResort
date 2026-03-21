@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { revalidatePath } from 'next/cache'
 import { prisma } from '@/lib/prisma'
+import { getSessionUser } from '@/lib/auth'
 
 export async function GET(
     request: Request,
@@ -14,12 +15,12 @@ export async function GET(
         })
 
         if (!park) {
-            return NextResponse.json({ error: 'Park not found' }, { status: 404 })
+            return NextResponse.json({ error: 'Parque não encontrado' }, { status: 404 })
         }
 
         return NextResponse.json(park)
     } catch {
-        return NextResponse.json({ error: 'Failed to fetch park' }, { status: 500 })
+        return NextResponse.json({ error: 'Erro ao buscar parque' }, { status: 500 })
     }
 }
 
@@ -28,7 +29,19 @@ export async function PUT(
     { params }: { params: Promise<{ id: string }> }
 ) {
     try {
+        const user = await getSessionUser()
+        if (!user) return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
+
         const { id } = await params
+        const park = await prisma.park.findUnique({ where: { id } })
+
+        if (!park) return NextResponse.json({ error: 'Parque não encontrado' }, { status: 404 })
+
+        const currentUser = await prisma.user.findUnique({ where: { id: user.id } })
+        if (park.userId !== user.id && currentUser?.role !== 'ADMIN') {
+            return NextResponse.json({ error: 'Sem permissão para editar este parque' }, { status: 403 })
+        }
+
         const body = await request.json()
         const { name, slug, city, description, attractionsDetails, imageUrl, isPinned, ticketLink, images } = body
 
@@ -37,7 +50,7 @@ export async function PUT(
             where: { parkId: id }
         })
 
-        const park = await prisma.park.update({
+        const updatedPark = await prisma.park.update({
             where: { id },
             data: {
                 name,
@@ -58,10 +71,10 @@ export async function PUT(
         revalidatePath('/')
         revalidatePath('/parks')
 
-        return NextResponse.json(park)
+        return NextResponse.json(updatedPark)
     } catch (error) {
         console.error('Error updating park:', error)
-        return NextResponse.json({ error: 'Failed to update park' }, { status: 500 })
+        return NextResponse.json({ error: 'Erro ao atualizar parque' }, { status: 500 })
     }
 }
 
@@ -70,7 +83,19 @@ export async function DELETE(
     { params }: { params: Promise<{ id: string }> }
 ) {
     try {
+        const user = await getSessionUser()
+        if (!user) return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
+
         const { id } = await params
+        const park = await prisma.park.findUnique({ where: { id } })
+
+        if (!park) return NextResponse.json({ error: 'Parque não encontrado' }, { status: 404 })
+
+        const currentUser = await prisma.user.findUnique({ where: { id: user.id } })
+        if (park.userId !== user.id && currentUser?.role !== 'ADMIN') {
+            return NextResponse.json({ error: 'Sem permissão para excluir este parque' }, { status: 403 })
+        }
+
         await prisma.park.delete({
             where: { id }
         })
@@ -79,6 +104,6 @@ export async function DELETE(
 
         return new NextResponse(null, { status: 204 })
     } catch {
-        return NextResponse.json({ error: 'Failed to delete park' }, { status: 500 })
+        return NextResponse.json({ error: 'Erro ao excluir parque' }, { status: 500 })
     }
 }

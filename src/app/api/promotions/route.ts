@@ -2,6 +2,7 @@
 import { NextResponse } from 'next/server'
 import { revalidatePath } from 'next/cache'
 import { prisma } from '@/lib/prisma'
+import { getSessionUser } from '@/lib/auth'
 
 export async function GET() {
     try {
@@ -10,12 +11,15 @@ export async function GET() {
         })
         return NextResponse.json(promotions)
     } catch {
-        return NextResponse.json({ error: 'Failed to fetch promotions' }, { status: 500 })
+        return NextResponse.json({ error: 'Erro ao buscar promoções' }, { status: 500 })
     }
 }
 
 export async function POST(request: Request) {
     try {
+        const user = await getSessionUser()
+        if (!user) return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
+
         const body = await request.json()
         const { title, city, price, duration, hotel, peopleCount, flightInfo, serviceInfo, description, imageUrl, breakfast, lunch, dinner } = body
 
@@ -34,6 +38,7 @@ export async function POST(request: Request) {
                 breakfast: Boolean(breakfast),
                 lunch: Boolean(lunch),
                 dinner: Boolean(dinner),
+                userId: user.id
             }
         })
 
@@ -42,6 +47,6 @@ export async function POST(request: Request) {
         return NextResponse.json(promotion)
     } catch (error) {
         console.error('Error creating promotion:', error)
-        return NextResponse.json({ error: 'Failed to create promotion' }, { status: 500 })
+        return NextResponse.json({ error: 'Erro ao criar promoção' }, { status: 500 })
     }
 }

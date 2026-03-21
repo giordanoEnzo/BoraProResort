@@ -4,8 +4,10 @@
 import { useState, useEffect, useCallback } from 'react'
 import { format, isToday } from 'date-fns'
 import Link from 'next/link'
+import ConfirmModal from '@/components/ConfirmModal'
 
 interface Reservation {
+// ... existing interface ...
     id: string
     name: string
     email: string
@@ -54,6 +56,22 @@ export default function AdminDashboard() {
     const [filterDateEnd, setFilterDateEnd] = useState('')
     const [loading, setLoading] = useState(true)
 
+    // Modal state
+    const [modalConfig, setModalConfig] = useState<{
+        isOpen: boolean;
+        title: string;
+        message: string;
+        onConfirm: () => void;
+        type: 'danger' | 'warning' | 'info';
+        confirmText?: string;
+    }>({
+        isOpen: false,
+        title: '',
+        message: '',
+        onConfirm: () => {},
+        type: 'danger'
+    });
+
     const fetchReservations = useCallback(async () => {
         setLoading(true)
         let url = '/api/reservations'
@@ -92,9 +110,18 @@ export default function AdminDashboard() {
         return () => clearTimeout(timer)
     }, [fetchReservations, fetchStats])
 
-    const handleStatusChange = async (id: string, newStatus: string) => {
-        if (!confirm(`Alterar status para ${newStatus}?`)) return
+    const handleStatusChange = (id: string, newStatus: string) => {
+        setModalConfig({
+            isOpen: true,
+            title: 'Alterar Status',
+            message: `Deseja realmente alterar o status desta reserva para ${newStatus === 'CONFIRMED' ? 'Confirmada' : 'Cancelada'}?`,
+            type: 'info',
+            confirmText: 'Alterar',
+            onConfirm: () => performStatusUpdate(id, newStatus)
+        })
+    }
 
+    const performStatusUpdate = async (id: string, newStatus: string) => {
         try {
             const res = await fetch(`/api/reservations/${id}`, {
                 method: 'PATCH',
@@ -106,7 +133,7 @@ export default function AdminDashboard() {
 
             if (res.ok) {
                 fetchReservations()
-                fetchStats() // Refresh stats too
+                fetchStats()
             } else {
                 const err = await res.json()
                 alert(`Erro: ${err.error}`)
@@ -114,12 +141,23 @@ export default function AdminDashboard() {
         } catch (error) {
             console.error(error)
             alert("Erro ao atualizar status.")
+        } finally {
+            setModalConfig(prev => ({ ...prev, isOpen: false }))
         }
     }
 
-    const handleDelete = async (id: string) => {
-        if (!confirm('Você tem ABSOLUTA certeza que deseja apagar esta reserva permanentemente?')) return
+    const handleDelete = (id: string) => {
+        setModalConfig({
+            isOpen: true,
+            title: 'Apagar Reserva',
+            message: 'Você tem ABSOLUTA certeza que deseja apagar esta reserva permanentemente? Esta ação não pode ser desfeita.',
+            type: 'danger',
+            confirmText: 'Apagar',
+            onConfirm: () => performDelete(id)
+        })
+    }
 
+    const performDelete = async (id: string) => {
         try {
             const res = await fetch(`/api/reservations/${id}`, {
                 method: 'DELETE',
@@ -135,6 +173,8 @@ export default function AdminDashboard() {
         } catch (error) {
             console.error(error)
             alert("Erro ao apagar reserva.")
+        } finally {
+            setModalConfig(prev => ({ ...prev, isOpen: false }))
         }
     }
 
@@ -365,6 +405,17 @@ export default function AdminDashboard() {
                     </div>
                 </div>
             </div>
+
+            <ConfirmModal 
+                isOpen={modalConfig.isOpen}
+                title={modalConfig.title}
+                message={modalConfig.message}
+                onConfirm={modalConfig.onConfirm}
+                onCancel={() => setModalConfig(prev => ({ ...prev, isOpen: false }))}
+                type={modalConfig.type}
+                confirmText={modalConfig.confirmText}
+                cancelText="Voltar"
+            />
         </div>
     )
 }

@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Pin, PinOff } from 'lucide-react'
+import ConfirmModal from '@/components/ConfirmModal'
 
 interface Park {
     id: string
@@ -16,6 +17,8 @@ interface Park {
 export default function ParkList() {
     const [parks, setParks] = useState<Park[]>([])
     const [loading, setLoading] = useState(true)
+    const [modalOpen, setModalOpen] = useState(false)
+    const [parkToDelete, setParkToDelete] = useState<string | null>(null)
 
     const fetchParks = async () => {
         setLoading(true)
@@ -39,11 +42,16 @@ export default function ParkList() {
         fetchParks()
     }, [])
 
-    const handleDelete = async (id: string) => {
-        if (!confirm('Tem certeza que deseja excluir este parque?')) return
+    const handleDeleteClick = (id: string) => {
+        setParkToDelete(id)
+        setModalOpen(true)
+    }
+
+    const confirmDelete = async () => {
+        if (!parkToDelete) return
 
         try {
-            const res = await fetch(`/api/parks/${id}`, { method: 'DELETE' })
+            const res = await fetch(`/api/parks/${parkToDelete}`, { method: 'DELETE' })
             if (res.ok) {
                 fetchParks()
             } else {
@@ -52,6 +60,9 @@ export default function ParkList() {
         } catch (error) {
             console.error(error)
             alert('Erro ao excluir parque')
+        } finally {
+            setModalOpen(false)
+            setParkToDelete(null)
         }
     }
 
@@ -142,7 +153,7 @@ export default function ParkList() {
                                             Editar
                                         </Link>
                                         <button
-                                            onClick={() => handleDelete(park.id)}
+                                            onClick={() => handleDeleteClick(park.id)}
                                             className="btn"
                                             style={{ background: '#d32f2f', color: 'white', padding: '8px 16px', fontSize: '0.8rem' }}
                                         >
@@ -155,6 +166,16 @@ export default function ParkList() {
                     )}
                 </div>
             </div>
+
+            <ConfirmModal 
+                isOpen={modalOpen}
+                title="Excluir Parque"
+                message="Tem certeza que deseja excluir este parque? Esta ação não pode ser desfeita."
+                onConfirm={confirmDelete}
+                onCancel={() => setModalOpen(false)}
+                confirmText="Excluir"
+                cancelText="Cancelar"
+            />
         </div>
     )
 }

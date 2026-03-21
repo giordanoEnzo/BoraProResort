@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { revalidatePath } from 'next/cache'
 import { prisma } from '@/lib/prisma'
+import { getSessionUser } from '@/lib/auth'
 
 export async function GET() {
     try {
@@ -10,18 +11,21 @@ export async function GET() {
         })
         return NextResponse.json(parks)
     } catch {
-        return NextResponse.json({ error: 'Failed to fetch parks' }, { status: 500 })
+        return NextResponse.json({ error: 'Erro ao buscar parques' }, { status: 500 })
     }
 }
 
 export async function POST(request: Request) {
     try {
+        const user = await getSessionUser()
+        if (!user) return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
+
         const body = await request.json()
         const { name, slug, city, description, attractionsDetails, imageUrl, isPinned, ticketLink, images } = body
 
         const existing = await prisma.park.findUnique({ where: { slug } })
         if (existing) {
-            return NextResponse.json({ error: 'Slug already exists' }, { status: 400 })
+            return NextResponse.json({ error: 'Slug já existe' }, { status: 400 })
         }
 
         const park = await prisma.park.create({
@@ -34,6 +38,7 @@ export async function POST(request: Request) {
                 imageUrl,
                 isPinned,
                 ticketLink,
+                userId: user.id,
                 images: {
                     create: (images || []).map((url: string) => ({ url }))
                 }
@@ -47,6 +52,6 @@ export async function POST(request: Request) {
         return NextResponse.json(park)
     } catch (error) {
         console.error('Error creating park:', error)
-        return NextResponse.json({ error: 'Failed to create park' }, { status: 500 })
+        return NextResponse.json({ error: 'Erro ao criar parque' }, { status: 500 })
     }
 }

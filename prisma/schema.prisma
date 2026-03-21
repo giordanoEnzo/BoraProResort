@@ -11,6 +11,19 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id            String      @id @default(uuid())
+  email         String      @unique
+  password      String
+  name          String?
+  role          String      @default("USER") // USER, ADMIN
+  resorts       Resort[]
+  parks         Park[]
+  promotions    Promotion[]
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+}
+
 model Resort {
   id          String        @id @default(uuid())
   name        String
@@ -19,6 +32,8 @@ model Resort {
   description String
   imageUrl    String
   isPinned    Boolean       @default(false)
+  userId      String?       // Optional for existing data, but should be required for new ones
+  user        User?         @relation(fields: [userId], references: [id])
   images      ResortImage[]
   reservations Reservation[]
 }
@@ -69,6 +84,8 @@ model Promotion {
   breakfast   Boolean  @default(false)
   lunch       Boolean  @default(false)
   dinner      Boolean  @default(false)
+  userId      String?
+  user        User?    @relation(fields: [userId], references: [id])
   createdAt   DateTime @default(now())
 }
 
@@ -93,6 +110,8 @@ model Park {
   imageUrl           String
   isPinned           Boolean     @default(false)
   ticketLink         String?
+  userId             String?
+  user               User?       @relation(fields: [userId], references: [id])
   images             ParkImage[]
 }
 

@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Pin, PinOff } from 'lucide-react'
+import ConfirmModal from '@/components/ConfirmModal'
 
 interface Resort {
     id: string
@@ -17,6 +18,8 @@ interface Resort {
 export default function ResortList() {
     const [resorts, setResorts] = useState<Resort[]>([])
     const [loading, setLoading] = useState(true)
+    const [modalOpen, setModalOpen] = useState(false)
+    const [resortToDelete, setResortToDelete] = useState<string | null>(null)
 
     const fetchResorts = async () => {
         setLoading(true)
@@ -40,11 +43,16 @@ export default function ResortList() {
         fetchResorts()
     }, [])
 
-    const handleDelete = async (id: string) => {
-        if (!confirm('Tem certeza que deseja excluir este resort?')) return
+    const handleDeleteClick = (id: string) => {
+        setResortToDelete(id)
+        setModalOpen(true)
+    }
+
+    const confirmDelete = async () => {
+        if (!resortToDelete) return
 
         try {
-            const res = await fetch(`/api/resorts/${id}`, { method: 'DELETE' })
+            const res = await fetch(`/api/resorts/${resortToDelete}`, { method: 'DELETE' })
             if (res.ok) {
                 fetchResorts()
             } else {
@@ -53,17 +61,14 @@ export default function ResortList() {
         } catch (error) {
             console.error(error)
             alert('Erro ao excluir resort')
+        } finally {
+            setModalOpen(false)
+            setResortToDelete(null)
         }
     }
 
     const handlePin = async (resort: Resort) => {
-        const pinnedCount = resorts.filter(r => r.isPinned).length
-        
-        if (!resort.isPinned && pinnedCount >= 4) {
-            alert('Você pode fixar no máximo 4 resorts na página inicial.')
-            return
-        }
-
+// ... existing code ...
         try {
             const res = await fetch(`/api/resorts/${resort.id}`, {
                 method: 'PUT',
@@ -143,7 +148,7 @@ export default function ResortList() {
                                             Editar
                                         </Link>
                                         <button
-                                            onClick={() => handleDelete(resort.id)}
+                                            onClick={() => handleDeleteClick(resort.id)}
                                             className="btn"
                                             style={{ background: '#d32f2f', color: 'white', padding: '8px 16px', fontSize: '0.8rem' }}
                                         >
@@ -156,6 +161,16 @@ export default function ResortList() {
                     )}
                 </div>
             </div>
+
+            <ConfirmModal 
+                isOpen={modalOpen}
+                title="Excluir Resort"
+                message="Tem certeza que deseja excluir este resort? Esta ação não pode ser desfeita."
+                onConfirm={confirmDelete}
+                onCancel={() => setModalOpen(false)}
+                confirmText="Excluir"
+                cancelText="Cancelar"
+            />
         </div>
     )
 }
