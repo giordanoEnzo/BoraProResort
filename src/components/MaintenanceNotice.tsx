@@ -15,7 +15,7 @@ const MaintenanceNotice = () => {
         
         <p className="maintenance-description">
           Estamos trabalhando para melhorar sua experiência. 
-          O site do <strong>Grupo Bora Pro</strong> está passando por uma atualização técnica
+          O site do <strong>Bora Pro Resort</strong> está passando por uma atualização técnica
           e algumas funcionalidades estarão indisponíveis temporariamente.
         </p>
 

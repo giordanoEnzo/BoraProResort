@@ -41,11 +41,11 @@ export default async function Home() {
       <section className="section" id="sobre">
         <div className="container text-center">
           <p className="subtitle" style={{ color: 'var(--color-primary)', textTransform: 'uppercase', letterSpacing: '2px', fontWeight: 'bold' }}>Quem Somos</p>
-          <h2>O Grupo Bora Pro: Sua próxima experiência inesquecível começa aqui</h2>
+          <h2>Bora Pro Resort: Sua próxima experiência inesquecível começa aqui</h2>
           
           <div style={{ maxWidth: '1000px', margin: '2rem auto 0', textAlign: 'left', lineHeight: '1.8' }}>
             <p className="mb-4">
-              O <strong>Grupo Bora Pro</strong> nasceu do desejo de transformar viagens em experiências inesquecíveis. Acreditamos que viajar vai muito além de escolher um destino, é sobre criar memórias, viver momentos únicos e realizar sonhos. Para isso, contamos com duas marcas especializadas para atender todas as suas necessidades:
+              O <strong>Bora Pro Resort</strong> nasceu do desejo de transformar viagens em experiências inesquecíveis. Acreditamos que viajar vai muito além de escolher um destino, é sobre criar memórias, viver momentos únicos e realizar sonhos. Para isso, contamos com duas marcas especializadas para atender todas as suas necessidades:
             </p>
             
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem', marginBottom: '2rem' }}>
@@ -103,7 +103,7 @@ export default async function Home() {
             <div style={{ color: '#333' }}>
               <h2 style={{ color: '#333', fontSize: '2.5rem', marginBottom: '1.5rem' }}>Conheça a Bora Pro Destino</h2>
               <p style={{ fontSize: '1.2rem', lineHeight: '1.7', marginBottom: '2rem' }}>
-                Mais do que apenas resorts, nossa agência de viagens do grupo oferece as melhores tarifas e pacotes exclusivos para destinos nacionais e internacionais.
+                Mais do que apenas resorts, nossa agência de viagens oferece as melhores tarifas e pacotes exclusivos para destinos nacionais e internacionais.
               </p>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
                 <Link href="#promocoes" className="btn" style={{ background: '#e33537', color: 'white', padding: '15px 30px' }}>
