@@ -6,6 +6,10 @@ import ResortCard from '@/components/ResortCard'
 import ParkPreviewCard from '@/components/ParkPreviewCard'
 import PromotionCard from '@/components/PromotionCard'
 import Testimonials from '@/components/Testimonials'
+import MaintenanceNotice from '@/components/MaintenanceNotice'
+
+const MAINTENANCE_MODE = true // Altere para false para desativar
+
 
 export const dynamic = 'force-dynamic'
 
@@ -25,6 +29,10 @@ export default async function Home() {
     take: 4
   })
   const promotions = await prisma.promotion.findMany({ orderBy: { createdAt: 'desc' } })
+
+  if (MAINTENANCE_MODE) {
+    return <MaintenanceNotice />
+  }
 
   return (
     <>
