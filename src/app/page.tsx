@@ -8,12 +8,17 @@ import PromotionCard from '@/components/PromotionCard'
 import Testimonials from '@/components/Testimonials'
 import MaintenanceNotice from '@/components/MaintenanceNotice'
 
-const MAINTENANCE_MODE = true // Altere para false para desativar
+import { cookies } from 'next/headers'
+
+import { MAINTENANCE_MODE } from '@/lib/constants'
 
 
 export const dynamic = 'force-dynamic'
 
 export default async function Home() {
+  const cookieStore = await cookies()
+  const isAdmin = cookieStore.get('admin_session')?.value === 'authenticated'
+
   const resorts = await prisma.resort.findMany({
     orderBy: [
       { isPinned: 'desc' },
@@ -30,7 +35,7 @@ export default async function Home() {
   })
   const promotions = await prisma.promotion.findMany({ orderBy: { createdAt: 'desc' } })
 
-  if (MAINTENANCE_MODE) {
+  if (MAINTENANCE_MODE && !isAdmin) {
     return <MaintenanceNotice />
   }
 
