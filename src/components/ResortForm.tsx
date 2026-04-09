@@ -33,9 +33,9 @@ export default function ResortForm({ initialData }: ResortFormProps) {
         if (!e.target.files?.length) return
 
         setLoading(true)
-        const file = e.target.files[0]
+        const files = Array.from(e.target.files)
         const data = new FormData()
-        data.append('file', file)
+        files.forEach(file => data.append('file', file))
 
         try {
             const res = await fetch('/api/upload', {
@@ -44,11 +44,12 @@ export default function ResortForm({ initialData }: ResortFormProps) {
             })
             const json = await res.json()
 
-            if (json.url) {
+            if (json.urls || json.url) {
                 if (isMain) {
                     setFormData({ ...formData, imageUrl: json.url })
                 } else {
-                    setGallery([...gallery, json.url])
+                    const newUrls = json.urls || [json.url]
+                    setGallery([...gallery, ...newUrls])
                 }
             } else {
                 alert('Erro ao enviar imagem')
@@ -150,7 +151,7 @@ export default function ResortForm({ initialData }: ResortFormProps) {
 
             <div style={{ marginBottom: '2rem' }}>
                 <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>Galeria de Fotos (Carrossel)</label>
-                <input type="file" onChange={e => handleImageUpload(e, false)} accept="image/*" />
+                <input type="file" multiple onChange={e => handleImageUpload(e, false)} accept="image/*" />
                 <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', marginTop: '1rem' }}>
                     {gallery.map((url, i) => (
                         <div key={i} style={{ position: 'relative', width: '100px', height: '100px' }}>

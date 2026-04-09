@@ -47,9 +47,9 @@ export default function PromotionForm({ initialData }: PromotionFormProps) {
         if (!e.target.files?.length) return
 
         setLoading(true)
-        const file = e.target.files[0]
+        const files = Array.from(e.target.files)
         const data = new FormData()
-        data.append('file', file)
+        files.forEach(file => data.append('file', file))
 
         try {
             const res = await fetch('/api/upload', {
@@ -211,7 +211,7 @@ export default function PromotionForm({ initialData }: PromotionFormProps) {
 
             <div style={{ marginBottom: '2rem' }}>
                 <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>Imagem</label>
-                <input type="file" onChange={handleImageUpload} accept="image/*" />
+                <input type="file" multiple onChange={handleImageUpload} accept="image/*" />
                 {formData.imageUrl && (
                     <div style={{ marginTop: '1rem', position: 'relative', width: '100%', height: '200px' }}>
                         <Image src={formData.imageUrl} alt="Capa" fill style={{ objectFit: 'cover', borderRadius: '8px' }} />

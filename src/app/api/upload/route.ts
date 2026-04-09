@@ -5,24 +5,32 @@ import path from 'path'
 
 export async function POST(request: Request) {
     const formData = await request.formData()
-    const file = formData.get('file') as File
+    const files = formData.getAll('file') as File[]
 
-    if (!file) {
-        return NextResponse.json({ error: 'No file uploaded' }, { status: 400 })
+    if (!files || files.length === 0) {
+        return NextResponse.json({ error: 'No files uploaded' }, { status: 400 })
     }
 
-    const buffer = Buffer.from(await file.arrayBuffer())
-    const filename = Date.now() + '_' + file.name.replace(/\s+/g, '_')
     const uploadDir = path.join(process.cwd(), 'public/uploads')
+    const urls: string[] = []
 
     try {
         // Ensure directory exists
         await mkdir(uploadDir, { recursive: true })
 
-        await writeFile(path.join(uploadDir, filename), buffer)
-        return NextResponse.json({ url: `/uploads/${filename}` })
+        for (const file of files) {
+            const buffer = Buffer.from(await file.arrayBuffer())
+            const filename = Date.now() + '_' + Math.random().toString(36).substring(7) + '_' + file.name.replace(/\s+/g, '_')
+            await writeFile(path.join(uploadDir, filename), buffer)
+            urls.push(`/uploads/${filename}`)
+        }
+
+        return NextResponse.json({ 
+            url: urls[0], 
+            urls: urls 
+        })
     } catch (error) {
-        console.error('Error saving file:', error)
-        return NextResponse.json({ error: 'Error saving file' }, { status: 500 })
+        console.error('Error saving files:', error)
+        return NextResponse.json({ error: 'Error saving files' }, { status: 500 })
     }
 }
