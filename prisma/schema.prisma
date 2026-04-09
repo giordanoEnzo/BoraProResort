@@ -102,3 +102,12 @@ model ParkImage {
   parkId    String
   park      Park     @relation(fields: [parkId], references: [id], onDelete: Cascade)
 }
+model Testimonial {
+  id        String   @id @default(uuid())
+  author    String
+  text      String
+  rating    Int
+  cpf       String   @unique
+  status    String   @default("PENDING") // PENDING, APPROVED, REJECTED
+  createdAt DateTime @default(now())
+}

@@ -188,6 +188,7 @@ export default function AdminDashboard() {
                     <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
                         <Link href="/admin/analytics" className="btn btn-secondary" style={{ background: '#e1bee7', color: '#4a148c', flexGrow: 1, textAlign: 'center' }}>Sensores</Link>
                         <Link href="/admin/promotions" className="btn btn-secondary" style={{ background: '#fbc02d', flexGrow: 1, textAlign: 'center' }}>Gerenciar Promoções</Link>
+                        <Link href="/admin/testimonials" className="btn btn-secondary" style={{ background: '#ffccbc', color: '#bf360c', flexGrow: 1, textAlign: 'center' }}>Gerenciar Depoimentos</Link>
                         <Link href="/admin/parks" className="btn btn-secondary" style={{ background: '#81c784', flexGrow: 1, textAlign: 'center' }}>Gerenciar Parques</Link>
                         <Link href="/admin/resorts" className="btn btn-primary" style={{ flexGrow: 1, textAlign: 'center' }}>Gerenciar Resorts</Link>
                         <Link href="/" className="btn btn-secondary" style={{ flexGrow: 1, textAlign: 'center' }}>Voltar ao Site</Link>
