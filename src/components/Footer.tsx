@@ -103,6 +103,12 @@ const Footer = () => {
                                 </div>
                                 <span style={{ fontSize: '0.95rem' }}>@boraproresort</span>
                             </a>
+                            <a href="https://www.instagram.com/boraprodestino/" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', gap: '1rem', opacity: 0.8, transition: 'all 0.3s ease' }} className="footer-contact">
+                                <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                    <Instagram size={18} color="var(--color-secondary)" />
+                                </div>
+                                <span style={{ fontSize: '0.95rem' }}>@boraprodestino</span>
+                            </a>
                         </div>
                     </div>
                 </div>
