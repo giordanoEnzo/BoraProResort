@@ -49,6 +49,8 @@ model Reservation {
   parkAdults    Int      @default(0)
   parkChildren  Int      @default(0)
   parkBabies    Int      @default(0)
+  guestBirthDates String?   // JSON stringified array of dates
+  parkGuestBirthDates String? // JSON stringified array of dates
   notes         String?
   status        String   @default("PENDING") // PENDING, CONFIRMED, CANCELLED
   createdAt     DateTime @default(now())

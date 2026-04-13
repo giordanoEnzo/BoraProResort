@@ -18,7 +18,24 @@ export default function CalendarSystem({ resortId }: CalendarSystemProps) {
     const [currentMonth, setCurrentMonth] = useState(new Date())
     const [selection, setSelection] = useState<{ start: Date | null; end: Date | null }>({ start: null, end: null })
     const [showForm, setShowForm] = useState(false)
-    const [formData, setFormData] = useState({ name: '', email: '', phone: '', adults: 1, children: 0, babies: 0, boardChoice: 'sem_pensao', boardType: '', parkTicketsChoice: 'nao', parkName: '', parkAdults: 1, parkChildren: 0, parkBabies: 0, notes: '' })
+    const [formData, setFormData] = useState({ 
+        name: '', 
+        email: '', 
+        phone: '', 
+        adults: 1, 
+        children: 0, 
+        babies: 0, 
+        guestBirthDates: { adults: [''], children: [] as string[], babies: [] as string[] },
+        boardChoice: 'sem_pensao', 
+        boardType: '', 
+        parkTicketsChoice: 'nao', 
+        parkName: '', 
+        parkAdults: 0, 
+        parkChildren: 0, 
+        parkBabies: 0, 
+        parkGuestBirthDates: { adults: [] as string[], children: [] as string[], babies: [] as string[] },
+        notes: '' 
+    })
     const [submitStatus, setSubmitStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
     const [parks, setParks] = useState<{ id: string; name: string; city: string }[]>([])
 
@@ -135,6 +152,7 @@ export default function CalendarSystem({ resortId }: CalendarSystemProps) {
                     adults: formData.adults,
                     children: formData.children,
                     babies: formData.babies,
+                    guestBirthDates: JSON.stringify(formData.guestBirthDates),
                     guests: formData.adults + formData.children + formData.babies,
                     boardType: formData.boardChoice === 'com_pensao' ? formData.boardType || 'Café da manhã' : null,
                     parkTickets: formData.parkTicketsChoice === 'sim',
@@ -142,6 +160,7 @@ export default function CalendarSystem({ resortId }: CalendarSystemProps) {
                     parkAdults: formData.parkTicketsChoice === 'sim' ? formData.parkAdults : 0,
                     parkChildren: formData.parkTicketsChoice === 'sim' ? formData.parkChildren : 0,
                     parkBabies: formData.parkTicketsChoice === 'sim' ? formData.parkBabies : 0,
+                    parkGuestBirthDates: formData.parkTicketsChoice === 'sim' ? JSON.stringify(formData.parkGuestBirthDates) : null,
                     notes: formData.notes,
                 }),
             })
@@ -151,7 +170,14 @@ export default function CalendarSystem({ resortId }: CalendarSystemProps) {
             setSubmitStatus('success')
             setSelection({ start: null, end: null })
             setShowForm(false)
-            setFormData({ name: '', email: '', phone: '', adults: 1, children: 0, babies: 0, boardChoice: 'sem_pensao', boardType: '', parkTicketsChoice: 'nao', parkName: '', parkAdults: 1, parkChildren: 0, parkBabies: 0, notes: '' })
+            setFormData({ 
+                name: '', email: '', phone: '', adults: 1, children: 0, babies: 0, 
+                guestBirthDates: { adults: [''], children: [], babies: [] },
+                boardChoice: 'sem_pensao', boardType: '', parkTicketsChoice: 'nao', parkName: '', 
+                parkAdults: 0, parkChildren: 0, parkBabies: 0, 
+                parkGuestBirthDates: { adults: [], children: [], babies: [] },
+                notes: '' 
+            })
         } catch (error) {
             console.error(error)
             setSubmitStatus('error')
@@ -309,7 +335,15 @@ export default function CalendarSystem({ resortId }: CalendarSystemProps) {
                             <label style={{ display: 'block', fontSize: '0.8rem', marginBottom: '4px', color: '#666' }}>Adultos</label>
                             <input
                                 type="number" min="1" required
-                                value={formData.adults} onChange={e => setFormData({ ...formData, adults: parseInt(e.target.value) || 0 })}
+                                value={formData.adults} 
+                                onChange={e => {
+                                    const val = parseInt(e.target.value) || 1;
+                                    const diff = val - formData.guestBirthDates.adults.length;
+                                    let newDates = [...formData.guestBirthDates.adults];
+                                    if (diff > 0) newDates = [...newDates, ...Array(diff).fill('')];
+                                    else if (diff < 0) newDates = newDates.slice(0, val);
+                                    setFormData({ ...formData, adults: val, guestBirthDates: { ...formData.guestBirthDates, adults: newDates } })
+                                }}
                                 style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #ddd' }}
                             />
                         </div>
@@ -317,7 +351,15 @@ export default function CalendarSystem({ resortId }: CalendarSystemProps) {
                             <label style={{ display: 'block', fontSize: '0.8rem', marginBottom: '4px', color: '#666' }}>Crianças (7-12)</label>
                             <input
                                 type="number" min="0" required
-                                value={formData.children} onChange={e => setFormData({ ...formData, children: parseInt(e.target.value) || 0 })}
+                                value={formData.children} 
+                                onChange={e => {
+                                    const val = parseInt(e.target.value) || 0;
+                                    const diff = val - formData.guestBirthDates.children.length;
+                                    let newDates = [...formData.guestBirthDates.children];
+                                    if (diff > 0) newDates = [...newDates, ...Array(diff).fill('')];
+                                    else if (diff < 0) newDates = newDates.slice(0, val);
+                                    setFormData({ ...formData, children: val, guestBirthDates: { ...formData.guestBirthDates, children: newDates } })
+                                }}
                                 style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #ddd' }}
                             />
                         </div>
@@ -325,10 +367,71 @@ export default function CalendarSystem({ resortId }: CalendarSystemProps) {
                             <label style={{ display: 'block', fontSize: '0.8rem', marginBottom: '4px', color: '#666' }}>Bebês (0-6)</label>
                             <input
                                 type="number" min="0" required
-                                value={formData.babies} onChange={e => setFormData({ ...formData, babies: parseInt(e.target.value) || 0 })}
+                                value={formData.babies} 
+                                onChange={e => {
+                                    const val = parseInt(e.target.value) || 0;
+                                    const diff = val - formData.guestBirthDates.babies.length;
+                                    let newDates = [...formData.guestBirthDates.babies];
+                                    if (diff > 0) newDates = [...newDates, ...Array(diff).fill('')];
+                                    else if (diff < 0) newDates = newDates.slice(0, val);
+                                    setFormData({ ...formData, babies: val, guestBirthDates: { ...formData.guestBirthDates, babies: newDates } })
+                                }}
                                 style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #ddd' }}
                             />
                         </div>
+                    </div>
+
+                    {/* Guest Birth Dates Inputs */}
+                    <div style={{ marginBottom: '1.5rem', padding: '1rem', background: '#f1f1f1', borderRadius: '8px' }}>
+                        <h5 style={{ marginBottom: '1rem', fontSize: '0.9rem' }}>Datas de Nascimento dos Hóspedes</h5>
+                        
+                        {formData.guestBirthDates.adults.map((date, i) => (
+                            <div key={`adult-${i}`} style={{ marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                <span style={{ fontSize: '0.75rem', color: '#666', minWidth: '80px' }}>Adulto {i+1}:</span>
+                                <input 
+                                    type="date" required
+                                    value={date}
+                                    onChange={e => {
+                                        const newDates = [...formData.guestBirthDates.adults];
+                                        newDates[i] = e.target.value;
+                                        setFormData({ ...formData, guestBirthDates: { ...formData.guestBirthDates, adults: newDates } })
+                                    }}
+                                    style={{ flex: 1, padding: '6px', borderRadius: '4px', border: '1px solid #ccc' }}
+                                />
+                            </div>
+                        ))}
+
+                        {formData.guestBirthDates.children.map((date, i) => (
+                            <div key={`child-${i}`} style={{ marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                <span style={{ fontSize: '0.75rem', color: '#666', minWidth: '80px' }}>Criança {i+1}:</span>
+                                <input 
+                                    type="date" required
+                                    value={date}
+                                    onChange={e => {
+                                        const newDates = [...formData.guestBirthDates.children];
+                                        newDates[i] = e.target.value;
+                                        setFormData({ ...formData, guestBirthDates: { ...formData.guestBirthDates, children: newDates } })
+                                    }}
+                                    style={{ flex: 1, padding: '6px', borderRadius: '4px', border: '1px solid #ccc' }}
+                                />
+                            </div>
+                        ))}
+
+                        {formData.guestBirthDates.babies.map((date, i) => (
+                            <div key={`baby-${i}`} style={{ marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                <span style={{ fontSize: '0.75rem', color: '#666', minWidth: '80px' }}>Bebê {i+1}:</span>
+                                <input 
+                                    type="date" required
+                                    value={date}
+                                    onChange={e => {
+                                        const newDates = [...formData.guestBirthDates.babies];
+                                        newDates[i] = e.target.value;
+                                        setFormData({ ...formData, guestBirthDates: { ...formData.guestBirthDates, babies: newDates } })
+                                    }}
+                                    style={{ flex: 1, padding: '6px', borderRadius: '4px', border: '1px solid #ccc' }}
+                                />
+                            </div>
+                        ))}
                     </div>
 
                     <div style={{ marginBottom: '1rem' }}>
@@ -389,8 +492,16 @@ export default function CalendarSystem({ resortId }: CalendarSystemProps) {
                                     <div>
                                         <label style={{ display: 'block', fontSize: '0.8rem', marginBottom: '4px', color: '#666' }}>Adultos</label>
                                         <input
-                                            type="number" min="1" required
-                                            value={formData.parkAdults} onChange={e => setFormData({ ...formData, parkAdults: parseInt(e.target.value) || 0 })}
+                                            type="number" min="0" required
+                                            value={formData.parkAdults} 
+                                            onChange={e => {
+                                                const val = parseInt(e.target.value) || 0;
+                                                const diff = val - formData.parkGuestBirthDates.adults.length;
+                                                let newDates = [...formData.parkGuestBirthDates.adults];
+                                                if (diff > 0) newDates = [...newDates, ...Array(diff).fill('')];
+                                                else if (diff < 0) newDates = newDates.slice(0, val);
+                                                setFormData({ ...formData, parkAdults: val, parkGuestBirthDates: { ...formData.parkGuestBirthDates, adults: newDates } })
+                                            }}
                                             style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #b8daff' }}
                                         />
                                     </div>
@@ -398,7 +509,15 @@ export default function CalendarSystem({ resortId }: CalendarSystemProps) {
                                         <label style={{ display: 'block', fontSize: '0.8rem', marginBottom: '4px', color: '#666' }}>Crianças</label>
                                         <input
                                             type="number" min="0" required
-                                            value={formData.parkChildren} onChange={e => setFormData({ ...formData, parkChildren: parseInt(e.target.value) || 0 })}
+                                            value={formData.parkChildren} 
+                                            onChange={e => {
+                                                const val = parseInt(e.target.value) || 0;
+                                                const diff = val - formData.parkGuestBirthDates.children.length;
+                                                let newDates = [...formData.parkGuestBirthDates.children];
+                                                if (diff > 0) newDates = [...newDates, ...Array(diff).fill('')];
+                                                else if (diff < 0) newDates = newDates.slice(0, val);
+                                                setFormData({ ...formData, parkChildren: val, parkGuestBirthDates: { ...formData.parkGuestBirthDates, children: newDates } })
+                                            }}
                                             style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #b8daff' }}
                                         />
                                     </div>
@@ -406,10 +525,71 @@ export default function CalendarSystem({ resortId }: CalendarSystemProps) {
                                         <label style={{ display: 'block', fontSize: '0.8rem', marginBottom: '4px', color: '#666' }}>Bebês</label>
                                         <input
                                             type="number" min="0" required
-                                            value={formData.parkBabies} onChange={e => setFormData({ ...formData, parkBabies: parseInt(e.target.value) || 0 })}
+                                            value={formData.parkBabies} 
+                                            onChange={e => {
+                                                const val = parseInt(e.target.value) || 0;
+                                                const diff = val - formData.parkGuestBirthDates.babies.length;
+                                                let newDates = [...formData.parkGuestBirthDates.babies];
+                                                if (diff > 0) newDates = [...newDates, ...Array(diff).fill('')];
+                                                else if (diff < 0) newDates = newDates.slice(0, val);
+                                                setFormData({ ...formData, parkBabies: val, parkGuestBirthDates: { ...formData.parkGuestBirthDates, babies: newDates } })
+                                            }}
                                             style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #b8daff' }}
                                         />
                                     </div>
+                                </div>
+
+                                {/* Park Guest Birth Dates Inputs */}
+                                <div style={{ marginTop: '1rem', padding: '1rem', background: 'rgba(255,255,255,0.5)', borderRadius: '8px' }}>
+                                    <h5 style={{ marginBottom: '1rem', fontSize: '0.85rem', color: '#004085' }}>Datas de Nascimento para o Parque</h5>
+                                    
+                                    {formData.parkGuestBirthDates.adults.map((date, i) => (
+                                        <div key={`park-adult-${i}`} style={{ marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                            <span style={{ fontSize: '0.7rem', color: '#004085', minWidth: '70px' }}>Adulto {i+1}:</span>
+                                            <input 
+                                                type="date" required
+                                                value={date}
+                                                onChange={e => {
+                                                    const newDates = [...formData.parkGuestBirthDates.adults];
+                                                    newDates[i] = e.target.value;
+                                                    setFormData({ ...formData, parkGuestBirthDates: { ...formData.parkGuestBirthDates, adults: newDates } })
+                                                }}
+                                                style={{ flex: 1, padding: '4px', borderRadius: '4px', border: '1px solid #b8daff', fontSize: '0.8rem' }}
+                                            />
+                                        </div>
+                                    ))}
+
+                                    {formData.parkGuestBirthDates.children.map((date, i) => (
+                                        <div key={`park-child-${i}`} style={{ marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                            <span style={{ fontSize: '0.7rem', color: '#004085', minWidth: '70px' }}>Criança {i+1}:</span>
+                                            <input 
+                                                type="date" required
+                                                value={date}
+                                                onChange={e => {
+                                                    const newDates = [...formData.parkGuestBirthDates.children];
+                                                    newDates[i] = e.target.value;
+                                                    setFormData({ ...formData, parkGuestBirthDates: { ...formData.parkGuestBirthDates, children: newDates } })
+                                                }}
+                                                style={{ flex: 1, padding: '4px', borderRadius: '4px', border: '1px solid #b8daff', fontSize: '0.8rem' }}
+                                            />
+                                        </div>
+                                    ))}
+
+                                    {formData.parkGuestBirthDates.babies.map((date, i) => (
+                                        <div key={`park-baby-${i}`} style={{ marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                            <span style={{ fontSize: '0.7rem', color: '#004085', minWidth: '70px' }}>Bebê {i+1}:</span>
+                                            <input 
+                                                type="date" required
+                                                value={date}
+                                                onChange={e => {
+                                                    const newDates = [...formData.parkGuestBirthDates.babies];
+                                                    newDates[i] = e.target.value;
+                                                    setFormData({ ...formData, parkGuestBirthDates: { ...formData.parkGuestBirthDates, babies: newDates } })
+                                                }}
+                                                style={{ flex: 1, padding: '4px', borderRadius: '4px', border: '1px solid #b8daff', fontSize: '0.8rem' }}
+                                            />
+                                        </div>
+                                    ))}
                                 </div>
                             </div>
                         )}

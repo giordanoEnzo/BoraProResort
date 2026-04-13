@@ -5,7 +5,7 @@ import { NextResponse } from 'next/server'
 export async function POST(request: Request) {
     try {
         const body = await request.json()
-        const { resortId, startDate, endDate, name, email, phone, guests, adults, children, babies, boardType, parkTickets, parkName, parkAdults, parkChildren, parkBabies, notes } = body
+        const { resortId, startDate, endDate, name, email, phone, guests, adults, children, babies, guestBirthDates, boardType, parkTickets, parkName, parkAdults, parkChildren, parkBabies, parkGuestBirthDates, notes } = body
 
         // Validation
         // Overlap check removed as per requirement: multiple reservations can exist on same dates.
@@ -22,12 +22,14 @@ export async function POST(request: Request) {
                 adults: Number(adults) || 1,
                 children: Number(children) || 0,
                 babies: Number(babies) || 0,
+                guestBirthDates: guestBirthDates || null,
                 boardType: boardType || null,
                 parkTickets: Boolean(parkTickets),
                 parkName: parkName || null,
                 parkAdults: Number(parkAdults) || 0,
                 parkChildren: Number(parkChildren) || 0,
                 parkBabies: Number(parkBabies) || 0,
+                parkGuestBirthDates: parkGuestBirthDates || null,
                 notes,
                 status: 'PENDING'
             }

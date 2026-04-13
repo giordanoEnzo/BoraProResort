@@ -24,6 +24,8 @@ interface Reservation {
     parkAdults: number
     parkChildren: number
     parkBabies: number
+    guestBirthDates: string | null
+    parkGuestBirthDates: string | null
     status: string
     resort: {
         name: string
@@ -179,6 +181,35 @@ export default function AdminDashboard() {
     }
 
     const maxSales = stats?.salesPerMonth?.reduce((acc, curr) => Math.max(acc, curr.count), 0) || 1
+
+    const renderBirthDates = (jsonStr: string | null) => {
+        if (!jsonStr) return null
+        try {
+            const data = JSON.parse(jsonStr)
+            const hasAdults = data.adults?.some((d: string) => d)
+            const hasChildren = data.children?.some((d: string) => d)
+            const hasBabies = data.babies?.some((d: string) => d)
+
+            if (!hasAdults && !hasChildren && !hasBabies) return null
+
+            return (
+                <div style={{ marginTop: '5px', padding: '4px 8px', background: '#f0f0f0', borderRadius: '4px', fontSize: '0.75rem' }}>
+                    <div style={{ fontWeight: 'bold', marginBottom: '2px', borderBottom: '1px solid #ddd' }}>Nascimentos:</div>
+                    {data.adults?.filter((d: string) => d).map((d: string, i: number) => (
+                        <div key={`ad-${i}`}>Ad {i+1}: {format(new Date(d + 'T00:00:00'), 'dd/MM/yyyy')}</div>
+                    ))}
+                    {data.children?.filter((d: string) => d).map((d: string, i: number) => (
+                        <div key={`cr-${i}`}>Cr {i+1}: {format(new Date(d + 'T00:00:00'), 'dd/MM/yyyy')}</div>
+                    ))}
+                    {data.babies?.filter((d: string) => d).map((d: string, i: number) => (
+                        <div key={`bb-${i}`}>Bb {i+1}: {format(new Date(d + 'T00:00:00'), 'dd/MM/yyyy')}</div>
+                    ))}
+                </div>
+            )
+        } catch (e) {
+            return null
+        }
+    }
 
     return (
         <div className="section" style={{ background: '#f5f5f5', minHeight: '100vh' }}>
@@ -337,12 +368,14 @@ export default function AdminDashboard() {
                                                 <strong>{res.name}</strong><br />
                                                 <a href={`mailto:${res.email}`} style={{ color: '#666' }}>{res.email}</a><br />
                                                 {res.phone}
+                                                {renderBirthDates(res.guestBirthDates)}
                                                 <div style={{ color: '#888', fontSize: '0.8rem', marginTop: '4px' }}>
                                                     {res.adults} Ad, {res.children} Cr, {res.babies} Bb<br />
-                                                    <strong>{res.boardType ? `${res.boardType}` : 'Sem pensão'}</strong>
+                                                    <strong>{res.boardType ? `${res.boardType}` : 'Sem pensao'}</strong>
                                                     {res.parkTickets && (
                                                         <div style={{ marginTop: '4px', color: '#1565c0' }}>
                                                             Parque: <strong>{res.parkName}</strong> ({res.parkAdults} Ad, {res.parkChildren} Cr, {res.parkBabies} Bb)
+                                                            {renderBirthDates(res.parkGuestBirthDates)}
                                                         </div>
                                                     )}
                                                 </div>
