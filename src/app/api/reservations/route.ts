@@ -5,10 +5,12 @@ import { NextResponse } from 'next/server'
 export async function POST(request: Request) {
     try {
         const body = await request.json()
+        console.log('RESERVATION BODY:', body)
         const { resortId, startDate, endDate, name, email, phone, guests, adults, children, babies, guestBirthDates, boardType, parkTickets, parkName, parkAdults, parkChildren, parkBabies, parkGuestBirthDates, notes } = body
 
-        // Validation
-        // Overlap check removed as per requirement: multiple reservations can exist on same dates.
+        if (!resortId || !startDate || !endDate || !name || !email || !phone) {
+            return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
+        }
 
         const reservation = await prisma.reservation.create({
             data: {
@@ -18,17 +20,17 @@ export async function POST(request: Request) {
                 name,
                 email,
                 phone,
-                guests: Number(guests),
-                adults: Number(adults) || 1,
-                children: Number(children) || 0,
-                babies: Number(babies) || 0,
+                guests: Math.max(1, Number(guests) || 1),
+                adults: Math.max(1, Number(adults) || 1),
+                children: Math.max(0, Number(children) || 0),
+                babies: Math.max(0, Number(babies) || 0),
                 guestBirthDates: guestBirthDates || null,
                 boardType: boardType || null,
                 parkTickets: Boolean(parkTickets),
                 parkName: parkName || null,
-                parkAdults: Number(parkAdults) || 0,
-                parkChildren: Number(parkChildren) || 0,
-                parkBabies: Number(parkBabies) || 0,
+                parkAdults: Math.max(0, Number(parkAdults) || 0),
+                parkChildren: Math.max(0, Number(parkChildren) || 0),
+                parkBabies: Math.max(0, Number(parkBabies) || 0),
                 parkGuestBirthDates: parkGuestBirthDates || null,
                 notes,
                 status: 'PENDING'
@@ -36,9 +38,12 @@ export async function POST(request: Request) {
         })
 
         return NextResponse.json(reservation)
-    } catch (error) {
-        console.error(error)
-        return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 })
+    } catch (error: any) {
+        console.error('RESERVATION ERROR DETAILS:', error)
+        return NextResponse.json({ 
+            error: 'Internal Server Error', 
+            details: error instanceof Error ? error.message : String(error) 
+        }, { status: 500 })
     }
 }
 
