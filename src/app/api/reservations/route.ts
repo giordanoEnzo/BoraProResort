@@ -40,9 +40,14 @@ export async function POST(request: Request) {
         return NextResponse.json(reservation)
     } catch (error: any) {
         console.error('RESERVATION ERROR DETAILS:', error)
+        let details = error instanceof Error ? error.message : String(error)
+        // If it's a Prisma error, it might have a code
+        if (error.code) {
+            details = `Prisma Error ${error.code}: ${details}`
+        }
         return NextResponse.json({ 
             error: 'Internal Server Error', 
-            details: error instanceof Error ? error.message : String(error) 
+            details: details 
         }, { status: 500 })
     }
 }

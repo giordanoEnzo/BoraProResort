@@ -91,6 +91,18 @@ const Footer = () => {
                                 </div>
                                 <span style={{ fontSize: '0.95rem' }}>(11) 99746-8489</span>
                             </a>
+                            <a href="https://wa.me/5511910349635" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', gap: '1rem', opacity: 0.8, transition: 'all 0.3s ease' }} className="footer-contact">
+                                <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifySelf: 'center', justifyContent: 'center' }}>
+                                    <Phone size={18} color="var(--color-secondary)" />
+                                </div>
+                                <span style={{ fontSize: '0.95rem' }}>(11) 91034-9635</span>
+                            </a>
+                            <a href="https://wa.me/5517996292641" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', gap: '1rem', opacity: 0.8, transition: 'all 0.3s ease' }} className="footer-contact">
+                                <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifySelf: 'center', justifyContent: 'center' }}>
+                                    <Phone size={18} color="var(--color-secondary)" />
+                                </div>
+                                <span style={{ fontSize: '0.95rem' }}>(17) 99629-2641</span>
+                            </a>
                             <a href="mailto:contato@boraproresort.com.br" style={{ display: 'flex', alignItems: 'center', gap: '1rem', opacity: 0.8, transition: 'all 0.3s ease' }} className="footer-contact">
                                 <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                     <Mail size={18} color="var(--color-secondary)" />
