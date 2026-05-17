@@ -22,17 +22,17 @@ export default function CalendarSystem({ resortId }: CalendarSystemProps) {
         name: '', 
         email: '', 
         phone: '', 
-        adults: 1, 
-        children: 0, 
-        babies: 0, 
+        adults: 1 as number | '', 
+        children: 0 as number | '', 
+        babies: 0 as number | '', 
         guestBirthDates: { adults: [''], children: [] as string[], babies: [] as string[] },
         boardChoice: 'sem_pensao', 
         boardType: '', 
         parkTicketsChoice: 'nao', 
         parkName: '', 
-        parkAdults: 0, 
-        parkChildren: 0, 
-        parkBabies: 0, 
+        parkAdults: 0 as number | '', 
+        parkChildren: 0 as number | '', 
+        parkBabies: 0 as number | '', 
         parkGuestBirthDates: { adults: [] as string[], children: [] as string[], babies: [] as string[] },
         notes: '' 
     })
@@ -138,6 +138,13 @@ export default function CalendarSystem({ resortId }: CalendarSystemProps) {
 
         setSubmitStatus('loading')
 
+        const adultsVal = formData.adults === '' ? 1 : Number(formData.adults);
+        const childrenVal = formData.children === '' ? 0 : Number(formData.children);
+        const babiesVal = formData.babies === '' ? 0 : Number(formData.babies);
+        const parkAdultsVal = formData.parkAdults === '' ? 0 : Number(formData.parkAdults);
+        const parkChildrenVal = formData.parkChildren === '' ? 0 : Number(formData.parkChildren);
+        const parkBabiesVal = formData.parkBabies === '' ? 0 : Number(formData.parkBabies);
+
         try {
             const res = await fetch('/api/reservations', {
                 method: 'POST',
@@ -149,17 +156,17 @@ export default function CalendarSystem({ resortId }: CalendarSystemProps) {
                     name: formData.name,
                     email: formData.email,
                     phone: formData.phone,
-                    adults: formData.adults,
-                    children: formData.children,
-                    babies: formData.babies,
+                    adults: adultsVal,
+                    children: childrenVal,
+                    babies: babiesVal,
                     guestBirthDates: JSON.stringify(formData.guestBirthDates),
-                    guests: formData.adults + formData.children + formData.babies,
+                    guests: adultsVal + childrenVal + babiesVal,
                     boardType: formData.boardChoice === 'com_pensao' ? formData.boardType || 'Café da manhã' : null,
                     parkTickets: formData.parkTicketsChoice === 'sim',
                     parkName: formData.parkTicketsChoice === 'sim' ? formData.parkName : null,
-                    parkAdults: formData.parkTicketsChoice === 'sim' ? formData.parkAdults : 0,
-                    parkChildren: formData.parkTicketsChoice === 'sim' ? formData.parkChildren : 0,
-                    parkBabies: formData.parkTicketsChoice === 'sim' ? formData.parkBabies : 0,
+                    parkAdults: formData.parkTicketsChoice === 'sim' ? parkAdultsVal : 0,
+                    parkChildren: formData.parkTicketsChoice === 'sim' ? parkChildrenVal : 0,
+                    parkBabies: formData.parkTicketsChoice === 'sim' ? parkBabiesVal : 0,
                     parkGuestBirthDates: formData.parkTicketsChoice === 'sim' ? JSON.stringify(formData.parkGuestBirthDates) : null,
                     notes: formData.notes,
                 }),
@@ -337,12 +344,28 @@ export default function CalendarSystem({ resortId }: CalendarSystemProps) {
                                 type="number" min="1" required
                                 value={formData.adults} 
                                 onChange={e => {
-                                    const val = parseInt(e.target.value) || 1;
+                                    const valStr = e.target.value;
+                                    if (valStr === '') {
+                                        setFormData({ ...formData, adults: '' });
+                                        return;
+                                    }
+                                    const val = parseInt(valStr);
+                                    if (isNaN(val)) return;
                                     const diff = val - formData.guestBirthDates.adults.length;
                                     let newDates = [...formData.guestBirthDates.adults];
                                     if (diff > 0) newDates = [...newDates, ...Array(diff).fill('')];
                                     else if (diff < 0) newDates = newDates.slice(0, val);
                                     setFormData({ ...formData, adults: val, guestBirthDates: { ...formData.guestBirthDates, adults: newDates } })
+                                }}
+                                onBlur={() => {
+                                    if (formData.adults === '') {
+                                        const val = 1;
+                                        const diff = val - formData.guestBirthDates.adults.length;
+                                        let newDates = [...formData.guestBirthDates.adults];
+                                        if (diff > 0) newDates = [...newDates, ...Array(diff).fill('')];
+                                        else if (diff < 0) newDates = newDates.slice(0, val);
+                                        setFormData({ ...formData, adults: val, guestBirthDates: { ...formData.guestBirthDates, adults: newDates } });
+                                    }
                                 }}
                                 style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #ddd' }}
                             />
@@ -353,12 +376,28 @@ export default function CalendarSystem({ resortId }: CalendarSystemProps) {
                                 type="number" min="0" required
                                 value={formData.children} 
                                 onChange={e => {
-                                    const val = parseInt(e.target.value) || 0;
+                                    const valStr = e.target.value;
+                                    if (valStr === '') {
+                                        setFormData({ ...formData, children: '' });
+                                        return;
+                                    }
+                                    const val = parseInt(valStr);
+                                    if (isNaN(val)) return;
                                     const diff = val - formData.guestBirthDates.children.length;
                                     let newDates = [...formData.guestBirthDates.children];
                                     if (diff > 0) newDates = [...newDates, ...Array(diff).fill('')];
                                     else if (diff < 0) newDates = newDates.slice(0, val);
                                     setFormData({ ...formData, children: val, guestBirthDates: { ...formData.guestBirthDates, children: newDates } })
+                                }}
+                                onBlur={() => {
+                                    if (formData.children === '') {
+                                        const val = 0;
+                                        const diff = val - formData.guestBirthDates.children.length;
+                                        let newDates = [...formData.guestBirthDates.children];
+                                        if (diff > 0) newDates = [...newDates, ...Array(diff).fill('')];
+                                        else if (diff < 0) newDates = newDates.slice(0, val);
+                                        setFormData({ ...formData, children: val, guestBirthDates: { ...formData.guestBirthDates, children: newDates } });
+                                    }
                                 }}
                                 style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #ddd' }}
                             />
@@ -369,12 +408,28 @@ export default function CalendarSystem({ resortId }: CalendarSystemProps) {
                                 type="number" min="0" required
                                 value={formData.babies} 
                                 onChange={e => {
-                                    const val = parseInt(e.target.value) || 0;
+                                    const valStr = e.target.value;
+                                    if (valStr === '') {
+                                        setFormData({ ...formData, babies: '' });
+                                        return;
+                                    }
+                                    const val = parseInt(valStr);
+                                    if (isNaN(val)) return;
                                     const diff = val - formData.guestBirthDates.babies.length;
                                     let newDates = [...formData.guestBirthDates.babies];
                                     if (diff > 0) newDates = [...newDates, ...Array(diff).fill('')];
                                     else if (diff < 0) newDates = newDates.slice(0, val);
                                     setFormData({ ...formData, babies: val, guestBirthDates: { ...formData.guestBirthDates, babies: newDates } })
+                                }}
+                                onBlur={() => {
+                                    if (formData.babies === '') {
+                                        const val = 0;
+                                        const diff = val - formData.guestBirthDates.babies.length;
+                                        let newDates = [...formData.guestBirthDates.babies];
+                                        if (diff > 0) newDates = [...newDates, ...Array(diff).fill('')];
+                                        else if (diff < 0) newDates = newDates.slice(0, val);
+                                        setFormData({ ...formData, babies: val, guestBirthDates: { ...formData.guestBirthDates, babies: newDates } });
+                                    }
                                 }}
                                 style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #ddd' }}
                             />
@@ -495,12 +550,28 @@ export default function CalendarSystem({ resortId }: CalendarSystemProps) {
                                             type="number" min="0" required
                                             value={formData.parkAdults} 
                                             onChange={e => {
-                                                const val = parseInt(e.target.value) || 0;
+                                                const valStr = e.target.value;
+                                                if (valStr === '') {
+                                                    setFormData({ ...formData, parkAdults: '' });
+                                                    return;
+                                                }
+                                                const val = parseInt(valStr);
+                                                if (isNaN(val)) return;
                                                 const diff = val - formData.parkGuestBirthDates.adults.length;
                                                 let newDates = [...formData.parkGuestBirthDates.adults];
                                                 if (diff > 0) newDates = [...newDates, ...Array(diff).fill('')];
                                                 else if (diff < 0) newDates = newDates.slice(0, val);
                                                 setFormData({ ...formData, parkAdults: val, parkGuestBirthDates: { ...formData.parkGuestBirthDates, adults: newDates } })
+                                            }}
+                                            onBlur={() => {
+                                                if (formData.parkAdults === '') {
+                                                    const val = 0;
+                                                    const diff = val - formData.parkGuestBirthDates.adults.length;
+                                                    let newDates = [...formData.parkGuestBirthDates.adults];
+                                                    if (diff > 0) newDates = [...newDates, ...Array(diff).fill('')];
+                                                    else if (diff < 0) newDates = newDates.slice(0, val);
+                                                    setFormData({ ...formData, parkAdults: val, parkGuestBirthDates: { ...formData.parkGuestBirthDates, adults: newDates } });
+                                                }
                                             }}
                                             style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #b8daff' }}
                                         />
@@ -511,12 +582,28 @@ export default function CalendarSystem({ resortId }: CalendarSystemProps) {
                                             type="number" min="0" required
                                             value={formData.parkChildren} 
                                             onChange={e => {
-                                                const val = parseInt(e.target.value) || 0;
+                                                const valStr = e.target.value;
+                                                if (valStr === '') {
+                                                    setFormData({ ...formData, parkChildren: '' });
+                                                    return;
+                                                }
+                                                const val = parseInt(valStr);
+                                                if (isNaN(val)) return;
                                                 const diff = val - formData.parkGuestBirthDates.children.length;
                                                 let newDates = [...formData.parkGuestBirthDates.children];
                                                 if (diff > 0) newDates = [...newDates, ...Array(diff).fill('')];
                                                 else if (diff < 0) newDates = newDates.slice(0, val);
                                                 setFormData({ ...formData, parkChildren: val, parkGuestBirthDates: { ...formData.parkGuestBirthDates, children: newDates } })
+                                            }}
+                                            onBlur={() => {
+                                                if (formData.parkChildren === '') {
+                                                    const val = 0;
+                                                    const diff = val - formData.parkGuestBirthDates.children.length;
+                                                    let newDates = [...formData.parkGuestBirthDates.children];
+                                                    if (diff > 0) newDates = [...newDates, ...Array(diff).fill('')];
+                                                    else if (diff < 0) newDates = newDates.slice(0, val);
+                                                    setFormData({ ...formData, parkChildren: val, parkGuestBirthDates: { ...formData.parkGuestBirthDates, children: newDates } });
+                                                }
                                             }}
                                             style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #b8daff' }}
                                         />
@@ -527,12 +614,28 @@ export default function CalendarSystem({ resortId }: CalendarSystemProps) {
                                             type="number" min="0" required
                                             value={formData.parkBabies} 
                                             onChange={e => {
-                                                const val = parseInt(e.target.value) || 0;
+                                                const valStr = e.target.value;
+                                                if (valStr === '') {
+                                                    setFormData({ ...formData, parkBabies: '' });
+                                                    return;
+                                                }
+                                                const val = parseInt(valStr);
+                                                if (isNaN(val)) return;
                                                 const diff = val - formData.parkGuestBirthDates.babies.length;
                                                 let newDates = [...formData.parkGuestBirthDates.babies];
                                                 if (diff > 0) newDates = [...newDates, ...Array(diff).fill('')];
                                                 else if (diff < 0) newDates = newDates.slice(0, val);
                                                 setFormData({ ...formData, parkBabies: val, parkGuestBirthDates: { ...formData.parkGuestBirthDates, babies: newDates } })
+                                            }}
+                                            onBlur={() => {
+                                                if (formData.parkBabies === '') {
+                                                    const val = 0;
+                                                    const diff = val - formData.parkGuestBirthDates.babies.length;
+                                                    let newDates = [...formData.parkGuestBirthDates.babies];
+                                                    if (diff > 0) newDates = [...newDates, ...Array(diff).fill('')];
+                                                    else if (diff < 0) newDates = newDates.slice(0, val);
+                                                    setFormData({ ...formData, parkBabies: val, parkGuestBirthDates: { ...formData.parkGuestBirthDates, babies: newDates } });
+                                                }
                                             }}
                                             style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #b8daff' }}
                                         />
