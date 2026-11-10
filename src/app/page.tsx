@@ -111,7 +111,16 @@ export default async function Home() {
                 Mais do que apenas resorts, nossa agência de viagens oferece as melhores tarifas e pacotes exclusivos para destinos nacionais e internacionais.
               </p>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
-                <Link href="#promocoes" className="btn" style={{ background: '#e33537', color: 'white', padding: '15px 30px' }}>
+                <a 
+                  href="https://viajandocomdesconto.com/bora-pro-resort/" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="btn" 
+                  style={{ background: '#e33537', color: 'white', padding: '15px 30px' }}
+                >
+                  Simule a sua viagem
+                </a>
+                <Link href="#promocoes" className="btn" style={{ background: '#333', color: 'white', padding: '15px 30px' }}>
                   Conferir Promoções
                 </Link>
                 <Link 
