@@ -1,0 +1,115 @@
+
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Resort {
+  id          String        @id @default(uuid())
+  name        String
+  slug        String        @unique
+  city        String
+  description String
+  imageUrl    String
+  isPinned    Boolean       @default(false)
+  images      ResortImage[]
+  reservations Reservation[]
+}
+
+model ResortImage {
+  id        String   @id @default(uuid())
+  url       String
+  resortId  String
+  resort    Resort   @relation(fields: [resortId], references: [id], onDelete: Cascade)
+}
+
+model Reservation {
+  id            String   @id @default(uuid())
+  resortId      String
+  resort        Resort   @relation(fields: [resortId], references: [id])
+  startDate     DateTime
+  endDate       DateTime
+  name          String
+  phone         String
+  email         String
+  guests        Int
+  adults        Int      @default(1)
+  children      Int      @default(0)
+  babies        Int      @default(0)
+  boardType     String?
+  parkTickets   Boolean  @default(false)
+  parkName      String?
+  parkAdults    Int      @default(0)
+  parkChildren  Int      @default(0)
+  parkBabies    Int      @default(0)
+  guestBirthDates String?   // JSON stringified array of dates
+  parkGuestBirthDates String? // JSON stringified array of dates
+  notes         String?
+  status        String   @default("PENDING") // PENDING, CONFIRMED, CANCELLED
+  createdAt     DateTime @default(now())
+}
+
+model Promotion {
+  id          String   @id @default(uuid())
+  title       String
+  city        String   @default("")
+  price       String
+  duration    String
+  hotel       String
+  peopleCount String
+  flightInfo  String?
+  serviceInfo String?
+  description String?
+  imageUrl    String
+  breakfast   Boolean  @default(false)
+  lunch       Boolean  @default(false)
+  dinner      Boolean  @default(false)
+  createdAt   DateTime @default(now())
+}
+
+model AnalyticsEvent {
+  id          String   @id @default(uuid())
+  sessionId   String?  // Optional session ID if accepted cookies
+  eventType   String   // 'pageview', 'click', 'time_on_page'
+  path        String   // Path URL
+  targetId    String?  // Clicked element ID
+  targetText  String?  // Clicked element text content
+  duration    Int?     // Time spent on page in seconds
+  createdAt   DateTime @default(now())
+}
+
+model Park {
+  id                 String      @id @default(uuid())
+  name               String
+  slug               String      @unique
+  city               String
+  description        String      @default("")
+  attractionsDetails String
+  imageUrl           String
+  isPinned           Boolean     @default(false)
+  ticketLink         String?
+  images             ParkImage[]
+}
+
+model ParkImage {
+  id        String   @id @default(uuid())
+  url       String
+  parkId    String
+  park      Park     @relation(fields: [parkId], references: [id], onDelete: Cascade)
+}
+model Testimonial {
+  id        String   @id @default(uuid())
+  author    String
+  text      String
+  rating    Int
+  cpf       String   @unique
+  status    String   @default("PENDING") // PENDING, APPROVED, REJECTED
+  createdAt DateTime @default(now())
+}

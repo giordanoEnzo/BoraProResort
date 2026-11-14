@@ -1,0 +1,154 @@
+
+> app@0.1.0 lint
+> eslint
+
+
+/Users/enzogiordanoaraujo/IA-projects/BoraProResort/src/app/admin/analytics/page.tsx
+  29:19  warning  'setLimit' is assigned a value but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              @typescript-eslint/no-unused-vars
+  75:33  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   @typescript-eslint/no-explicit-any
+  75:53  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   @typescript-eslint/no-explicit-any
+  94:9   error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/Users/enzogiordanoaraujo/IA-projects/BoraProResort/src/app/admin/analytics/page.tsx:94:9
+  92 |
+  93 |     useEffect(() => {
+> 94 |         fetchData()
+     |         ^^^^^^^^^ Avoid calling setState() directly within an effect
+  95 |         const interval = setInterval(fetchData, 30000) // update every 30s
+  96 |         return () => clearInterval(interval)
+  97 |     }, [page, limit, eventType, startDate, endDate])  react-hooks/set-state-in-effect
+  97:8   warning  React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               react-hooks/exhaustive-deps
+
+/Users/enzogiordanoaraujo/IA-projects/BoraProResort/src/app/admin/dashboard/page.tsx
+  51:26  warning  'setFilterResort' is assigned a value but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    @typescript-eslint/no-unused-vars
+  88:9   error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/Users/enzogiordanoaraujo/IA-projects/BoraProResort/src/app/admin/dashboard/page.tsx:88:9
+  86 |
+  87 |     useEffect(() => {
+> 88 |         fetchReservations()
+     |         ^^^^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  89 |         fetchStats()
+  90 |     }, [filterResort, filterStatus, filterDateStart, filterDateEnd])
+  91 |  react-hooks/set-state-in-effect
+  90:8   warning  React Hook useEffect has a missing dependency: 'fetchReservations'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    react-hooks/exhaustive-deps
+
+/Users/enzogiordanoaraujo/IA-projects/BoraProResort/src/app/api/analytics/route.ts
+  41:28  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/enzogiordanoaraujo/IA-projects/BoraProResort/src/app/api/dashboard/stats/route.ts
+   4:63  warning  'parseISO' is defined but never used  @typescript-eslint/no-unused-vars
+  78:22  warning  'e' is defined but never used         @typescript-eslint/no-unused-vars
+
+/Users/enzogiordanoaraujo/IA-projects/BoraProResort/src/app/api/parks/[id]/route.ts
+  21:14  warning  'error' is defined but never used  @typescript-eslint/no-unused-vars
+  81:14  warning  'error' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/enzogiordanoaraujo/IA-projects/BoraProResort/src/app/api/parks/route.ts
+  12:14  warning  'error' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/enzogiordanoaraujo/IA-projects/BoraProResort/src/app/api/promotions/[id]/route.ts
+  18:14  warning  'error' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/enzogiordanoaraujo/IA-projects/BoraProResort/src/app/api/promotions/route.ts
+  12:14  warning  'error' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/enzogiordanoaraujo/IA-projects/BoraProResort/src/app/api/reservations/route.ts
+  51:18  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/enzogiordanoaraujo/IA-projects/BoraProResort/src/app/api/resorts/[id]/route.ts
+  15:14  warning  'error' is defined but never used         @typescript-eslint/no-unused-vars
+  38:27  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/enzogiordanoaraujo/IA-projects/BoraProResort/src/app/api/resorts/route.ts
+  13:14  warning  'error' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/enzogiordanoaraujo/IA-projects/BoraProResort/src/app/api/upload/route.ts
+  20:15  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+/Users/enzogiordanoaraujo/IA-projects/BoraProResort/src/app/page.tsx
+  12:3  error  Use "@ts-expect-error" instead of "@ts-ignore", as "@ts-ignore" will do nothing if the following line is error-free  @typescript-eslint/ban-ts-comment
+  20:3  error  Use "@ts-expect-error" instead of "@ts-ignore", as "@ts-ignore" will do nothing if the following line is error-free  @typescript-eslint/ban-ts-comment
+  28:3  error  Use "@ts-expect-error" instead of "@ts-ignore", as "@ts-ignore" will do nothing if the following line is error-free  @typescript-eslint/ban-ts-comment
+
+/Users/enzogiordanoaraujo/IA-projects/BoraProResort/src/app/parks/[slug]/page.tsx
+  4:8  warning  'Image' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/enzogiordanoaraujo/IA-projects/BoraProResort/src/app/promotions/page.tsx
+  11:5  error  Use "@ts-expect-error" instead of "@ts-ignore", as "@ts-ignore" will do nothing if the following line is error-free  @typescript-eslint/ban-ts-comment
+  14:5  error  Use "@ts-expect-error" instead of "@ts-ignore", as "@ts-ignore" will do nothing if the following line is error-free  @typescript-eslint/ban-ts-comment
+
+/Users/enzogiordanoaraujo/IA-projects/BoraProResort/src/app/resorts/[slug]/page.tsx
+  4:8  warning  'Image' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/enzogiordanoaraujo/IA-projects/BoraProResort/src/components/AnalyticsTracker.tsx
+  21:13  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/Users/enzogiordanoaraujo/IA-projects/BoraProResort/src/components/AnalyticsTracker.tsx:21:13
+  19 |                 sessionStorage.setItem('analytics_session_id', session)
+  20 |             }
+> 21 |             setSessionId(session)
+     |             ^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  22 |         }
+  23 |     }, [])
+  24 |  react-hooks/set-state-in-effect
+
+/Users/enzogiordanoaraujo/IA-projects/BoraProResort/src/components/CalendarSystem.tsx
+    5:92  warning  'isAfter' is defined but never used                @typescript-eslint/no-unused-vars
+   12:19  error    Unexpected any. Specify a different type           @typescript-eslint/no-explicit-any
+   23:40  error    Unexpected any. Specify a different type           @typescript-eslint/no-explicit-any
+  191:29  error    'border' is never reassigned. Use 'const' instead  prefer-const
+
+/Users/enzogiordanoaraujo/IA-projects/BoraProResort/src/components/CookieBanner.tsx
+  12:13  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/Users/enzogiordanoaraujo/IA-projects/BoraProResort/src/components/CookieBanner.tsx:12:13
+  10 |         const consent = localStorage.getItem('cookie_consent')
+  11 |         if (!consent) {
+> 12 |             setShowBanner(true)
+     |             ^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  13 |         }
+  14 |     }, [])
+  15 |  react-hooks/set-state-in-effect
+
+/Users/enzogiordanoaraujo/IA-projects/BoraProResort/src/components/ParkList.tsx
+  49:51  error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  49:64  error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+
+/Users/enzogiordanoaraujo/IA-projects/BoraProResort/src/components/PromotionCard.tsx
+  24:13  warning  'id' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+/Users/enzogiordanoaraujo/IA-projects/BoraProResort/src/components/Testimonials.tsx
+  60:33  error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  60:42  error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+
+/Users/enzogiordanoaraujo/IA-projects/BoraProResort/src/components/WhatsAppFloatingButton.tsx
+  3:20  warning  'useEffect' is defined but never used  @typescript-eslint/no-unused-vars
+
+✖ 40 problems (22 errors, 18 warnings)
+  1 error and 0 warnings potentially fixable with the `--fix` option.
+

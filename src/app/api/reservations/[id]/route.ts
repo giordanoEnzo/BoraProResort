@@ -1,0 +1,47 @@
+
+import { prisma } from '@/lib/prisma'
+import { NextResponse } from 'next/server'
+
+export async function PATCH(request: Request, { params }: { params: Promise<{ id: string }> }) {
+    try {
+        const { status } = await request.json()
+        const { id } = await params
+
+        if (!['CONFIRMED', 'PENDING', 'CANCELLED'].includes(status)) {
+            return NextResponse.json({ error: 'Invalid status' }, { status: 400 })
+        }
+
+        const reservation = await prisma.reservation.findUnique({ where: { id } })
+        if (!reservation) {
+            return NextResponse.json({ error: 'Reservation not found' }, { status: 404 })
+        }
+
+        const updated = await prisma.reservation.update({
+            where: { id },
+            data: { status }
+        })
+
+        return NextResponse.json(updated)
+    } catch (error) {
+        console.error(error)
+        return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 })
+    }
+}
+
+export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }) {
+    try {
+        const { id } = await params
+
+        const reservation = await prisma.reservation.findUnique({ where: { id } })
+        if (!reservation) {
+            return NextResponse.json({ error: 'Reservation not found' }, { status: 404 })
+        }
+
+        await prisma.reservation.delete({ where: { id } })
+
+        return NextResponse.json({ success: true })
+    } catch (error) {
+        console.error(error)
+        return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 })
+    }
+}
