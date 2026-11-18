@@ -10,6 +10,14 @@ export default function Hero() {
                 <h1 className="hero-title">Venha viver essa experiência com a gente!</h1>
                 <p className="hero-subtitle">Aqui você encontra resorts, cruzeiros, pacotes de viagens e muito mais</p>
                 <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', flexWrap: 'wrap' }}>
+                    <a
+                        href="https://viajandocomdesconto.com/bora-pro-resort/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="btn btn-primary"
+                    >
+                        Simule a sua viagem
+                    </a>
                     <Link href="#resorts" className="btn btn-primary">
                         Ver Disponibilidade
                     </Link>
